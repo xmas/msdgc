@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import Course from './Course.vue';
+import Course from './Sections/Course.vue';
 defineProps({
     canLogin: {
         type: Boolean,
@@ -41,7 +41,9 @@ const headerStyle = "flex items-center justify-center"
     <Head title="Welcome" />
     <div class="bg-gray-100 dark:bg-zinc-900">
 
-        <header class="text-white pr-4 px-4 py-5 lg:py-2 font-bold" style="background-color: #3477F4;">
+        <header class="flex justify-between items-center text-white pr-4 px-4 py-5 lg:py-2 font-bold"
+            style="background-color: #3477F4;">
+            <img src="/images/msdgc_logo.png" alt="MSDGC Logo" class="h-12 w-auto pr-4 self-start sm:self-center" />
             <nav v-if="canLogin" class="mx-3 flex justify-end">
                 <Link v-if="$page.props.auth.user" :href="route('dashboard')" :class="navStyle">
                 Dashboard
@@ -62,15 +64,21 @@ const headerStyle = "flex items-center justify-center"
         <header :class="headerStyle"
             class="pb-6 lg:pb-0 relative py-40 lg:py-20 flex flex-col lg:flex-row items-center justify-between text-white px-6 lg:px-12"
             style="background: url('/images/north_park_hole_1.jpg') center center / cover no-repeat; opacity: 0.9;">
-            <div class="py-10 px-5 lg:px-20 "
-                style="background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0px, rgba(0,0,0,0) 30vh);">
-                <img src="/images/msdgc.png" alt="MSDGC Logo" class="h-12 w-auto pr-4 self-start sm:self-center" />
-                <div class="text-3xl font-bold text-white">
-                    Mineral Springs Disc Golf Club
+
+
+            <div class="flex flex-row items-center justify-between py-10 px-5 lg:px-20 text-shadow-lg "
+                style="background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0px, rgba(0,0,0,0));">
+                <img src="/images/msdgc_logo.png" alt="Needle" class="hidden lg:flex max-h-45 w-auto" />
+
+                <div>
+                    <div class="club-name text-6xl font-bold text-white uppercase text-center">
+                        Mineral Springs Disc Golf Club
+                    </div>
+                    <div class="text-xl text-white/90 italic font-bold lg:font-normal text-center">
+                        A Public Benefit Non-Profit Association
+                    </div>
                 </div>
-                <div class="text-xl text-white/80 italic">
-                    A Public Benefit Non-Profit Association
-                </div>
+                <img src="/images/squatch_disc.png" alt="Squatch Disc" class="hidden lg:flex max-h-45 w-auto" />
             </div>
 
         </header>
@@ -100,10 +108,14 @@ const headerStyle = "flex items-center justify-center"
 
                         <div :class="cardStyle" class="bg-zinc-800 text-white">
                             <p class="uppercase font-bold text-3xl">Monday Dubs!!</p>
-                             <p>6pm in the summer, earlier as it gets darker. If you're there by 5 you're probably safe. Check the Facebook group for weekly updates.</p>
+                            <p>6pm in the summer, earlier as it gets darker. If you're there by 5 you're probably safe.
+                                Check
+                                the Facebook group for weekly updates.</p>
 
                             <p class="uppercase font-bold text-3xl">IMPORTANT:</p>
-                            <p> This means the course is <span class="font-bold">VERY BUSY</span> on Monday evenings. All are welcome, but be prepared for a fun time.</p>
+                            <p> This means the course is <span class="font-bold">VERY BUSY</span> on Monday evenings.
+                                All are
+                                welcome, but be prepared for a fun time.</p>
                         </div>
 
 

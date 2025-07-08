@@ -11,3 +11,9 @@
 & *::selection {
     background-color: #b1a6a668;
 }
+
+.club-name {
+  font-family: "Bangers", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
