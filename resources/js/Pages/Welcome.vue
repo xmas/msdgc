@@ -1,6 +1,8 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import Course from './Sections/Course.vue';
+import LostFound from './Sections/LostFound.vue';
+
 defineProps({
     canLogin: {
         type: Boolean,
@@ -30,11 +32,27 @@ const ms_blue = '3477F4';
 const ms_grey = 'A5A5A6';
 const ms_green = '3F8E28';
 
-const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] text-black"
+const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] text-black"
 
 const headerStyle = "flex items-center justify-center"
 
 </script>
+
+<style scoped>
+.masked-element-image {
+    width: 200px;
+    height: 400px;
+    background: linear-gradient(90deg, #3F8E28, #A5A5A6, #3477F4);
+    background-size: 300% 100%;
+    animation: colorSlide 4s ease-in-out infinite;
+
+    /* Replace 'your-image.png' with your actual white image */
+    mask: url('images/needle.png') no-repeat center;
+    mask-size: contain;
+    -webkit-mask: url('images/needle.png') no-repeat center;
+    -webkit-mask-size: contain;
+}
+</style>
 
 <template>
 
@@ -68,7 +86,7 @@ const headerStyle = "flex items-center justify-center"
 
             <div class="flex flex-row items-center justify-between py-10 px-5 lg:px-20 text-shadow-lg "
                 style="background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0px, rgba(0,0,0,0));">
-                <img src="/images/msdgc_logo.png" alt="Needle" class="hidden lg:flex max-h-45 w-auto" />
+                <img src="/images/msdgc_logo.png" alt="Needle" class="hidden lg:flex max-h-45 w-auto relative " />
 
                 <div>
                     <div class="club-name text-6xl font-bold text-white uppercase text-center">
@@ -88,7 +106,8 @@ const headerStyle = "flex items-center justify-center"
             <nav class="flex flex-wrap gap-4 lg:col-span-1 text-white justify-between items-center ">
                 <a href="#course" class="hidden lg:flex" :class="navStyle">Course Map</a>
                 <span class="hidden lg:flex text-white/70">|</span>
-                <a href="#calendar" :class="navStyle">Calendar</a>
+                <a href="https://calendar.google.com/calendar/u/0/embed?src=495b1ab477f0effe46de4b97a8ae37ab1229210525dba1f4b8a558828ae8387f@group.calendar.google.com&ctz=America/Los_Angeles"
+                    :class="navStyle" target="_blank" rel="noopener">Calendar</a>
                 <span class="hidden lg:flex text-white/70">|</span>
                 <a href="#lost-found" class="hidden lg:flex" :class="navStyle">Lost and Found</a>
                 <span class="hidden lg:flex text-white/70">|</span>
@@ -119,9 +138,35 @@ const headerStyle = "flex items-center justify-center"
                         </div>
 
 
-                        <section id="course" :class="cardStyle">
+                        <section id="course" :class="cardStyle" class="bg-white">
                             <Course />
                         </section>
+
+                        <section id="calendar" :class="cardStyle" class="bg-blue-200">
+                            <div class="box-page">
+                                <div class="card-header">
+                                    <span class="card-header-icon">
+                                        <img src="/images/calendar.svg" />
+                                    </span>
+                                    <h1 class="text-3xl font-bold">Calendar</h1>
+                                </div>
+
+                                <p>Download our Calendar so you can be notified of events without needing Facebook!
+                                    We maintain the calendar to give notifications (both email and push) 1 hour before
+                                    start
+                                    times,
+                                    which can be edited to fit your preference.
+                                </p>
+                                <button class="btn-primary mt-8">
+                                    Check out the calendar!
+                                </button>
+                            </div>
+                        </section>
+
+
+                        <div id="lost-found" :class="cardStyle" class="bg-amber-300">
+                            <LostFound />
+                        </div>
 
                     </div>
                 </main>

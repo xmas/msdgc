@@ -17,3 +17,48 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.icon-container {
+  @apply flex items-center justify-center rounded-full;
+  /* width: 64px;
+  height: 64px; */
+  background: linear-gradient(to right, #3477F4 0% 45%, #666666 45% 55%, #3F8E28 55% 100%);
+}
+
+.btn-primary {
+  @apply bg-blue-500 text-white font-bold py-2 px-4 rounded;
+}
+
+
+.box-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.box-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.box-text {
+    flex: 2 1 350px;
+}
+
+body {
+    font-size: 1.5rem;
+    /* font-weight: 500; */
+}
+
+.card-header {
+    @apply flex h-20 justify-start rounded-full bg-zinc-800 items-center text-white mb-6
+}
+
+.card-header-icon {
+    @apply mr-4 rounded-full bg-blue-500 h-24 w-24 flex items-center justify-center;
+}
+
+.card-header-icon img{
+    width: 60px;
+}
