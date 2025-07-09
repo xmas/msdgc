@@ -33,7 +33,11 @@ defineProps({
     showNavigation: {
         type: Boolean,
         default: true
-    }
+    },
+    appDebug: {
+        type: String,
+        default: false
+    },
 });
 
 const navStyle = ""
@@ -46,8 +50,12 @@ const headerStyle = "flex items-center justify-center"
         <Head :title="title" />
 
         <!-- Public Header Navigation -->
-        <header class="flex justify-between items-center text-white pr-4 px-4 py-5 lg:py-2 font-bold"
-            style="background-color: #3477F4;">
+        <header
+            :class="['flex justify-between items-center text-white pr-4 px-4 py-5 lg:py-2 font-bold']"
+            :style="appDebug
+                ? 'background: repeating-linear-gradient(135deg, rgb(43 127 255)  0 20px, rgb(105 162 249) 20px 40px);'
+                : 'background-color: #3477F4;'"
+        >
             <Link href="/">
             <img src="/images/msdgc_logo.png" alt="MSDGC Logo" class="h-12 w-auto pr-4 self-start sm:self-center" />
             </Link>
@@ -58,7 +66,7 @@ const headerStyle = "flex items-center justify-center"
                     Us</a>
 
                 <Link v-if="$page.props.auth?.user" :href="route('dashboard')" :class="navStyle">
-                Dashboard
+                Member Area
                 </Link>
 
                 <template v-else>

@@ -20,6 +20,10 @@ defineProps({
         type: String,
         required: true,
     },
+    appDebug: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 function handleImageError() {
@@ -55,6 +59,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
         :can-login="canLogin"
         :can-register="canRegister"
         :show-hero="true"
+        :app-debug="appDebug"
         hero-title="Mineral Springs Disc Golf Club"
         hero-subtitle="A Public Benefit Non-Profit Association"
         hero-background="/images/north_park_hole_1.jpg">

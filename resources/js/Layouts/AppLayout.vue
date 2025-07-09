@@ -42,14 +42,18 @@ const logout = () => {
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-9 w-auto" />
+                                    <!-- <ApplicationMark class="block h-9 w-auto" /> -->
+                                    <img src="/images/msdgc_logo.png" alt="MSDGC Logo" class="h-12 w-auto ms-2" />
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('home')" :active="route().current('home')">
+                                    Public Site
+                                </NavLink>
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
+                                    Member Area
                                 </NavLink>
                             </div>
                         </div>
