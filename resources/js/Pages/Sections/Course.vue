@@ -4,7 +4,7 @@
             <span class="card-header-icon">
                 <img src="/images/basket.svg"/>
             </span>
-            <h1 class="text-3xl font-bold">The Course</h1>
+            <h1 class="card-header-text">The Course</h1>
         </div>
 
         <p>&nbsp;</p>

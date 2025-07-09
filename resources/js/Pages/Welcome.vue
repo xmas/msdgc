@@ -57,8 +57,7 @@ const headerStyle = "flex items-center justify-center"
 <template>
 
     <Head title="Welcome" />
-    <div class="bg-gray-100 dark:bg-zinc-900">
-
+    <div class="bg-gray-100 dark:bg-zinc-900 basket-tile">
         <header class="flex justify-between items-center text-white pr-4 px-4 py-5 lg:py-2 font-bold"
             style="background-color: #3477F4;">
             <img src="/images/msdgc_logo.png" alt="MSDGC Logo" class="h-12 w-auto pr-4 self-start sm:self-center" />
@@ -126,13 +125,13 @@ const headerStyle = "flex items-center justify-center"
                     <div class="grid gap-6">
 
                         <div :class="cardStyle" class="bg-zinc-800 text-white">
-                            <p class="uppercase font-bold text-3xl">Monday Dubs!!</p>
+                            <p class="uppercase font-bold text-6xl bangers">Monday Dubs!!</p>
                             <p>6pm in the summer, earlier as it gets darker. If you're there by 5 you're probably safe.
                                 Check
                                 the Facebook group for weekly updates.</p>
 
-                            <p class="uppercase font-bold text-3xl">IMPORTANT:</p>
-                            <p> This means the course is <span class="font-bold">VERY BUSY</span> on Monday evenings.
+                            <p class="uppercase font-bold text-6xl bangers text-red-300">IMPORTANT</p>
+                            <p class="text-red-100 font-bold"> This means the course is <span class="font-bold text-pink-400">VERY BUSY on Monday evenings</span>.
                                 All are
                                 welcome, but be prepared for a fun time.</p>
                         </div>
@@ -142,13 +141,13 @@ const headerStyle = "flex items-center justify-center"
                             <Course />
                         </section>
 
-                        <section id="calendar" :class="cardStyle" class="bg-blue-200">
+                        <section id="calendar" :class="cardStyle" class="bg-blue-200 squatch-tile">
                             <div class="box-page">
                                 <div class="card-header">
                                     <span class="card-header-icon">
                                         <img src="/images/calendar.svg" />
                                     </span>
-                                    <h1 class="text-3xl font-bold">Calendar</h1>
+                                    <h1 class="card-header-text">Calendar</h1>
                                 </div>
 
                                 <p>Download our Calendar so you can be notified of events without needing Facebook!
@@ -164,7 +163,7 @@ const headerStyle = "flex items-center justify-center"
                         </section>
 
 
-                        <div id="lost-found" :class="cardStyle" class="bg-amber-300">
+                        <div id="lost-found" :class="cardStyle" class="bg-amber-300 squatch-tile">
                             <LostFound />
                         </div>
 

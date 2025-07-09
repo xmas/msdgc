@@ -2,50 +2,51 @@
     <div class="box-page">
         <div class="card-header">
             <span class="card-header-icon">
-                <img src="/images/exchange.svg"/>
+                <img src="/images/exchange.svg" />
             </span>
-            <h1 class="text-3xl font-bold">Lost and Found</h1>
+            <h1 class="card-header-text">Lost and Found</h1>
         </div>
 
         <p>&nbsp;</p>
-        <div class="box-content flex-col">
-            <div class="relative flex w-full flex-1 items-stretch"> <a href="images/north_park_map.jpg" target="_blank"
-                    rel="noopener">
-                    <img src="images/north_park_map.jpg" alt="Mineral Springs Disc Golf Course Map" />
-                </a>
-            </div>
-            <div class="box-text">
-                <p>Mineral Springs Disc Golf Course was designed by Lowell Shields (PDGA #687) in 1987 with an
-                    impressive use of limited space.</p>
-                <p>&nbsp;</p>
+        <div class="box-content">
 
-                <p>Located on a very small 2.5 acre park, this course is heavily wooded and has tight fairways that call
-                    for accurate throws and distance control. It’s an 18 hole layout with 9 fairways and 14 baskets
-                    (8holes share 4 baskets). There is a tee sign at each set of tee pads and a course map (pictured to
-                    the right) by the 1st tee pad on the SE corner of the property.</p>
-                <p>&nbsp;</p>
+            <h1 class="text-2xl font-bold text-center mb-4">
+                Are you missing a disc at our course? Did you find one? Come by the box at the 2nd tee pad.
+            </h1>
+            <img src="images/lost_found.jpeg" class="w-full block"
+                style="width:100vw;max-width:unset;position:relative;left:50%;right:50%;transform:translateX(-50%);" />
 
-                <p>We are in the process of updating our tee signs and adding additional navigational signs for ease of
-                    play, but here are a few tips if you’re visiting for the first time:</p>
-                <ul>
-                    <li>Download the UDisc app and take advantage of the free account features including GPS course map.
-                    </li>
-                    <li><a href="https://udisc.com/courses/" target="_blank" rel="noopener">Click here for UDisc
-                            website</a></li>
-                    <li>Look closely at each tee sign for important things like OB’s, mando’s, and the blue (front 9)
-                        and red (back 9) baskets.</li>
-                    <li>Use the arrows attached to the underside of each basket to point you toward the next set of
-                        tee-pads.</li>
-                </ul>
-                <p>It is a multi-use park so please be courteous of those around you and watch for flying discs at all
-                    times.</p>
-                <p>&nbsp;</p>
-
-                <p>This park is volunteer-run and relies on donations for maintenance and upgrades. As a club, we help
-                    run events like tournaments and leagues, organize course work parties for maintenance and upkeep,
-                    and manage the lost and found returns!</p>
+            <div>
+                <div class="club-name text-6xl font-bold text-zinc uppercase pb-8">
+                    The Disc Drop
+                </div>
+                <img src="/images/disc_drop.jpeg" class="w-100" />
             </div>
 
+            <div>
+                With such a small course and lots of trees and bushes, discs can get lodged or hidden from plain
+                sight.
+                We text the owners of any discs that come in our box and can help you get reunited with your shank
+                drive. Usually from mid-spring to mid-fall, you can find club members at tee 2 most times from 4pm
+                to
+                7pm. If you need more assistance, contact us!
+
+                Two easy ways to contact us: email us at <a href="mailto:info@mineralspringsdgc.com"
+                    class="text-blue-600 underline">info@mineralspringsdgc.com</a> or jump on our <a
+                    href="https://www.facebook.com/groups/250860298866679" target="_blank" rel="noopener"
+                    class="text-blue-600 underline">Facebook group</a> to reach out!
+            </div>
+
+            <div>
+                    <div class="club-name text-6xl font-bold text-zinc uppercase pb-8">
+                        Get Your Disc Back
+                    </div>
+                     <img src="/images/lost_found_sign.jpg" class="w-100" />
+                </div>
+
+                <div>
+                   There is a slot on the upper righthand corner of the metal box where discs can be deposited when found on the course. This is where you will come to reclaim a disc when you receive a text.
+            </div>
         </div>
     </div>
 </template>
