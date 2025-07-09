@@ -13,6 +13,10 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/contact', function () {
+    return Inertia::render('Contact');
+})->name('contact');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

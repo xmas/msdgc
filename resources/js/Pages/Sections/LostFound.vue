@@ -13,8 +13,7 @@
             <h1 class="text-2xl font-bold text-center mb-4">
                 Are you missing a disc at our course? Did you find one? Come by the box at the 2nd tee pad.
             </h1>
-            <img src="images/lost_found.jpeg" class="w-full block"
-                style="width:100vw;max-width:unset;position:relative;left:50%;right:50%;transform:translateX(-50%);" />
+            <img src="images/lost_found.jpeg" class="w-full block"/>
 
             <div>
                 <div class="club-name text-6xl font-bold text-zinc uppercase pb-8">

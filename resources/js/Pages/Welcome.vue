@@ -2,6 +2,7 @@
 import { Head, Link } from '@inertiajs/vue3';
 import Course from './Sections/Course.vue';
 import LostFound from './Sections/LostFound.vue';
+import Membership from './Sections/Membership.vue';
 
 defineProps({
     canLogin: {
@@ -61,7 +62,12 @@ const headerStyle = "flex items-center justify-center"
         <header class="flex justify-between items-center text-white pr-4 px-4 py-5 lg:py-2 font-bold"
             style="background-color: #3477F4;">
             <img src="/images/msdgc_logo.png" alt="MSDGC Logo" class="h-12 w-auto pr-4 self-start sm:self-center" />
+
+
             <nav v-if="canLogin" class="mx-3 flex justify-end">
+                <a href="mailto:info@mineralspringsdgc.com" class="flex items-center bg-white inset text-blue-500 rounded-sm px-3 py-1 mr-8 bangers text-xl">Contact Us</a>
+
+
                 <Link v-if="$page.props.auth.user" :href="route('dashboard')" :class="navStyle">
                 Dashboard
                 </Link>
@@ -85,7 +91,7 @@ const headerStyle = "flex items-center justify-center"
 
             <div class="flex flex-row items-center justify-between py-10 px-5 lg:px-20 text-shadow-lg "
                 style="background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0px, rgba(0,0,0,0));">
-                <img src="/images/msdgc_logo.png" alt="Needle" class="hidden lg:flex max-h-45 w-auto relative " />
+                <img src="/images/msdgc_logo.png" alt="Needle" class="hidden lg:flex max-h-45 w-auto relative mr-8 " />
 
                 <div>
                     <div class="club-name text-6xl font-bold text-white uppercase text-center">
@@ -110,9 +116,9 @@ const headerStyle = "flex items-center justify-center"
                 <span class="hidden lg:flex text-white/70">|</span>
                 <a href="#lost-found" class="hidden lg:flex" :class="navStyle">Lost and Found</a>
                 <span class="hidden lg:flex text-white/70">|</span>
-                <a href="#club-membership" class="hidden lg:flex" :class="navStyle">Club Membership</a>
+                <a href="#membership" class="hidden lg:flex" :class="navStyle">Club Membership</a>
                 <span class="hidden lg:flex text-white/70">|</span>
-                <a href="#get-involved" class="hidden lg:flex" :class="navStyle">Get Involved</a>
+                <Link :href="route('contact')" class="hidden lg:flex" :class="navStyle">Get Involved</Link>
             </nav>
         </header>
 
@@ -167,10 +173,15 @@ const headerStyle = "flex items-center justify-center"
                             <LostFound />
                         </div>
 
+                         <div id="membership" :class="cardStyle" class="bg-lime-300 squatch-tile">
+                            <Membership />
+                        </div>
+
                     </div>
                 </main>
 
                 <footer class="py-16 text-sm text-black dark:text-white/70">
+                    &copy; {{ new Date().getFullYear() }} Mineral Springs Disc Golf Club. All rights reserved.
                 </footer>
             </div>
         </div>
