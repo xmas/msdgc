@@ -36,6 +36,36 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
+            'sms' => fake()->optional()->phoneNumber(),
+            'provider' => fake()->optional()->randomElement(['Verizon', 'AT&T', 'T-Mobile', 'Sprint', 'Other']),
+            'sms_opt_in' => fake()->boolean(),
+            'email_opt_in' => fake()->boolean(),
+            'how_did_you_hear' => fake()->optional()->randomElement([
+                'Google Search',
+                'Facebook',
+                'Friend Referral',
+                'Golf Course',
+                'Tournament',
+                'Word of Mouth',
+                'Other'
+            ]),
+            'paid_via' => fake()->optional()->randomElement([
+                'Cash',
+                'Check',
+                'Credit Card',
+                'PayPal',
+                'Venmo',
+                'Zelle'
+            ]),
+            'tags' => fake()->optional()->randomElements([
+                'beginner',
+                'intermediate',
+                'advanced',
+                'tournament_player',
+                'casual_player',
+                'instructor',
+                'volunteer'
+            ], fake()->numberBetween(0, 3)),
         ];
     }
 

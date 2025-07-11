@@ -13,7 +13,7 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
-        'appDebug' => 'blah'
+        'appDebug' => config('app.debug'),
     ]);
 })->name('home');
 
@@ -32,4 +32,8 @@ Route::middleware([
             'confirmsTwoFactorAuthentication' => false,
         ]);
     })->name('dashboard');
+
+    // Messages routes
+    Route::get('/messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
+    Route::post('/messages/send', [App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
 });

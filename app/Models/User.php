@@ -31,6 +31,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'sms',
+        'provider',
+        'sms_opt_in',
+        'email_opt_in',
+        'how_did_you_hear',
+        'paid_via',
+        'tags',
     ];
 
     /**
@@ -64,6 +71,9 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'sms_opt_in' => 'boolean',
+            'email_opt_in' => 'boolean',
+            'tags' => 'array',
         ];
     }
 }

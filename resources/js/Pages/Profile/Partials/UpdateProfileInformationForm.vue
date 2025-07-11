@@ -8,6 +8,9 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import SelectInput from '@/Components/SelectInput.vue';
+import Checkbox from '@/Components/Checkbox.vue';
+import TagInput from '@/Components/TagInput.vue';
 
 const props = defineProps({
     user: Object,
@@ -17,8 +20,46 @@ const form = useForm({
     _method: 'PUT',
     name: props.user.name,
     email: props.user.email,
+    sms: props.user.sms || '',
+    provider: props.user.provider || '',
+    sms_opt_in: props.user.sms_opt_in || false,
+    email_opt_in: props.user.email_opt_in || false,
+    how_did_you_hear: props.user.how_did_you_hear || '',
+    paid_via: props.user.paid_via || '',
+    tags: props.user.tags || [],
     photo: null,
 });
+
+const providerOptions = [
+    'Verizon',
+    'AT&T',
+    'T-Mobile',
+    'Sprint',
+    'Other'
+];
+
+const howDidYouHearOptions = [
+    'Google Search',
+    'Facebook',
+    'Instagram',
+    'Friend Referral',
+    'Golf Course',
+    'Tournament',
+    'Word of Mouth',
+    'Newsletter',
+    'Other'
+];
+
+const paidViaOptions = [
+    'Cash',
+    'Check',
+    'Credit Card',
+    'PayPal',
+    'Venmo',
+    'Zelle',
+    'Bank Transfer',
+    'Other'
+];
 
 const verificationLinkSent = ref(null);
 const photoPreview = ref(null);
@@ -174,6 +215,89 @@ const clearPhotoFileInput = () => {
                         A new verification link has been sent to your email address.
                     </div>
                 </div>
+            </div>
+
+            <!-- SMS/Phone Number -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="sms" value="SMS/Phone Number" />
+                <TextInput
+                    id="sms"
+                    v-model="form.sms"
+                    type="tel"
+                    class="mt-1 block w-full"
+                    autocomplete="tel"
+                    placeholder="(555) 123-4567"
+                />
+                <InputError :message="form.errors.sms" class="mt-2" />
+            </div>
+
+            <!-- Provider -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="provider" value="Mobile Provider" />
+                <SelectInput
+                    id="provider"
+                    v-model="form.provider"
+                    :options="providerOptions"
+                    placeholder="Select your mobile provider..."
+                />
+                <InputError :message="form.errors.provider" class="mt-2" />
+            </div>
+
+            <!-- Communication Preferences -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel value="Communication Preferences" />
+                <div class="mt-2 space-y-2">
+                    <label class="flex items-center">
+                        <Checkbox v-model:checked="form.sms_opt_in" />
+                        <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            I agree to receive SMS notifications
+                        </span>
+                    </label>
+                    <label class="flex items-center">
+                        <Checkbox v-model:checked="form.email_opt_in" />
+                        <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                            I agree to receive email notifications
+                        </span>
+                    </label>
+                </div>
+                <InputError :message="form.errors.sms_opt_in" class="mt-2" />
+                <InputError :message="form.errors.email_opt_in" class="mt-2" />
+            </div>
+
+            <!-- How did you hear about our club? -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="how_did_you_hear" value="How did you hear about our club?" />
+                <SelectInput
+                    id="how_did_you_hear"
+                    v-model="form.how_did_you_hear"
+                    :options="howDidYouHearOptions"
+                    placeholder="Please select..."
+                />
+                <InputError :message="form.errors.how_did_you_hear" class="mt-2" />
+            </div>
+
+            <!-- Paid Via -->
+            <div class="col-span-6 sm:col-span-4">
+                <InputLabel for="paid_via" value="Payment Method" />
+                <SelectInput
+                    id="paid_via"
+                    v-model="form.paid_via"
+                    :options="paidViaOptions"
+                    placeholder="How did you pay your membership fee?"
+                />
+                <InputError :message="form.errors.paid_via" class="mt-2" />
+            </div>
+
+            <!-- Tags -->
+            <div class="col-span-6 sm:col-span-4">
+                <TagInput
+                    v-model="form.tags"
+                    label="Tags"
+                />
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Add tags to categorize your profile (e.g., beginner, advanced, tournament player, volunteer)
+                </p>
+                <InputError :message="form.errors.tags" class="mt-2" />
             </div>
         </template>
 

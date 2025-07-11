@@ -1,23 +1,15 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
-import DeleteUserForm from '@/Pages/Profile/Partials/DeleteUserForm.vue';
-import LogoutOtherBrowserSessionsForm from '@/Pages/Profile/Partials/LogoutOtherBrowserSessionsForm.vue';
-import SectionBorder from '@/Components/SectionBorder.vue';
-import TwoFactorAuthenticationForm from '@/Pages/Profile/Partials/TwoFactorAuthenticationForm.vue';
-import UpdatePasswordForm from '@/Pages/Profile/Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from '@/Pages/Profile/Partials/UpdateProfileInformationForm.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Link } from '@inertiajs/vue3';
+
 
 defineProps({
-    confirmsTwoFactorAuthentication: {
-        type: Boolean,
-        default: false
-    },
-    sessions: {
-        type: Array,
-        default: () => []
-    },
+    confirmsTwoFactorAuthentication: Boolean,
+    sessions: Array,
 });
+
 </script>
 
 <template>
@@ -28,43 +20,115 @@ defineProps({
             </h2>
         </template>
 
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-                    <UpdateProfileInformationForm :user="$page.props.auth.user" />
-
-                    <SectionBorder />
-                </div>
-
-                <div v-if="$page.props.jetstream.canUpdatePassword">
-                    <UpdatePasswordForm class="mt-10 sm:mt-0" />
-
-                    <SectionBorder />
-                </div>
-
-                <div v-if="$page.props.jetstream.canManageTwoFactorAuthentication">
-                    <TwoFactorAuthenticationForm
-                        :requires-confirmation="confirmsTwoFactorAuthentication"
-                        class="mt-10 sm:mt-0"
-                    />
-
-                    <SectionBorder />
-                </div>
-
-                <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0" />
-
-                <template v-if="$page.props.jetstream.hasAccountDeletionFeatures">
-                    <SectionBorder />
-
-                    <DeleteUserForm class="mt-10 sm:mt-0" />
-                </template>
-            </div>
-        </div>
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <Welcome />
+                    <div class="p-6 lg:p-8">
+                        <h1 class="text-2xl font-medium text-gray-900 dark:text-white mb-6">
+                            Member Dashboard
+                        </h1>
+
+                        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <!-- Send Messages Card -->
+                            <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-8 w-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">
+                                                Send Messages
+                                            </dt>
+                                            <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                                                Email & SMS
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        Send messages to all users or specific groups based on tags.
+                                    </p>
+                                    <div class="mt-3">
+                                        <Link :href="route('messages.index')">
+                                            <PrimaryButton>
+                                                Send Messages
+                                            </PrimaryButton>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quick Stats Card -->
+                            <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-8 w-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">
+                                                Profile
+                                            </dt>
+                                            <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                                                Settings
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        Update your profile information and preferences.
+                                    </p>
+                                    <div class="mt-3">
+                                        <Link :href="route('profile.show')">
+                                            <PrimaryButton>
+                                                View Profile
+                                            </PrimaryButton>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Public Site Card -->
+                            <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-8 w-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0-9v9"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-5 w-0 flex-1">
+                                        <dl>
+                                            <dt class="text-sm font-medium text-gray-500 dark:text-gray-300 truncate">
+                                                Public Site
+                                            </dt>
+                                            <dd class="text-lg font-medium text-gray-900 dark:text-white">
+                                                MSDGC
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        Visit the public facing website and information.
+                                    </p>
+                                    <div class="mt-3">
+                                        <Link :href="route('home')">
+                                            <PrimaryButton>
+                                                View Site
+                                            </PrimaryButton>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

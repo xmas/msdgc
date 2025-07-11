@@ -66,18 +66,35 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
 
         <div class="bg-gray-100 dark:bg-zinc-900 basket-tile">
             <div class="relative min-h-screen flex flex-col items-center selection:bg-[#FF2D20] selection:text-white">
-                <div class="relative w-full px-6 lg:max-w-7xl py-10">
+                <div class="relative w-full px-6 lg:max-w-7xl">
                     <main class="mt-6">
                         <div class="grid gap-6">
 
-                            <div :class="cardStyle" class="bg-zinc-800 text-white">
-                                <p class="uppercase font-bold text-6xl bangers">Monday Dubs!!</p>
-                                <p>6pm in the summer, earlier as it gets darker. If you're there by 5 you're probably safe.
-                                    Check the Facebook group for weekly updates.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                                <!-- Monday Dubs Card -->
+                                <div :class="cardStyle" class="bg-zinc-800 text-white">
+                                    <p class="uppercase font-bold text-6xl bangers">Monday Dubs!!</p>
+                                    <p>6pm in the summer, earlier as it gets darker. If you're there by 5 you're probably safe.
+                                        Check the Facebook group for weekly updates.</p>
 
-                                <p class="uppercase font-bold text-6xl bangers text-red-300">IMPORTANT</p>
-                                <p class="text-red-100 font-bold"> This means the course is <span class="font-bold text-pink-400">VERY BUSY on Monday evenings</span>.
-                                    All are welcome, but be prepared for a fun time.</p>
+                                    <p class="uppercase font-bold text-6xl bangers text-red-300">IMPORTANT</p>
+                                    <p class="text-red-100 font-bold"> This means the course is <span class="font-bold text-pink-400">VERY BUSY on Monday evenings</span>.
+                                        All are welcome, but be prepared for a fun time.</p>
+                                </div>
+
+                                <!-- Sponsor Card 1 -->
+                                <div :class="cardStyle" class="bg-white text-black flex flex-col items-center justify-center">
+                                    <h2 class="font-bold text-2xl mb-2">Our Sponsors</h2>
+                                    <img src="/images/sponsor1.png" alt="Sponsor 1" class="w-32 h-32 object-contain mb-2" />
+                                    <p class="text-center">Thank you to <span class="font-bold">Sponsor 1</span> for supporting our club!</p>
+                                </div>
+
+                                <!-- Sponsor Card 2 -->
+                                <div :class="cardStyle" class="bg-white text-black flex flex-col items-center justify-center">
+                                    <h2 class="font-bold text-2xl mb-2">Our Sponsors</h2>
+                                    <img src="/images/sponsor2.png" alt="Sponsor 2" class="w-32 h-32 object-contain mb-2" />
+                                    <p class="text-center">Thank you to <span class="font-bold">Sponsor 2</span> for supporting our club!</p>
+                                </div>
                             </div>
 
                             <section id="course" :class="cardStyle" class="bg-white">
