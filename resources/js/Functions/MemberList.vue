@@ -57,6 +57,18 @@
           </svg>
           Save All
         </button>
+
+        <!-- Merge Members -->
+        <button
+          @click="openMergeModal"
+          :disabled="!canMerge"
+          class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-md transition-colors duration-200"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+          </svg>
+          Merge ({{ selectedMembers.size }})
+        </button>
       </div>
     </div>
 
@@ -80,10 +92,19 @@
       <!-- Table Header -->
       <div class="bg-gray-50 dark:bg-gray-700 px-6 py-3 border-b border-gray-200 dark:border-gray-600">
         <div class="grid grid-cols-12 gap-4 text-sm font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+          <div class="col-span-1 flex items-center">
+            <input
+              type="checkbox"
+              @change="toggleAllMembers"
+              :checked="selectedMembers.size === members.length && members.length > 0"
+              :indeterminate="selectedMembers.size > 0 && selectedMembers.size < members.length"
+              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+          </div>
           <div class="col-span-2">Name</div>
           <div class="col-span-2">Email</div>
           <div class="col-span-1">Phone</div>
-          <div class="col-span-2">Tags</div>
+          <div class="col-span-1">Tags</div>
           <div class="col-span-1">Provider</div>
           <div class="col-span-2">Paid Via</div>
           <div class="col-span-1">How Heard</div>
@@ -102,6 +123,16 @@
         >
           <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
             <div class="grid grid-cols-12 gap-4 items-center">
+              <!-- Checkbox -->
+              <div class="col-span-1">
+                <input
+                  type="checkbox"
+                  :checked="selectedMembers.has(item.id)"
+                  @change="toggleMember(item.id)"
+                  class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+              </div>
+
               <!-- Name -->
               <div class="col-span-2">
                 <input
@@ -138,13 +169,14 @@
               </div>
 
               <!-- Tags -->
-              <div class="col-span-2">
+              <div class="col-span-1">
                 <input
                   v-model="item.tags"
                   @input="markAsChanged(item)"
                   type="text"
                   class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Tags (comma separated)"
+                  placeholder="Tags"
+                  :title="item.tags"
                 />
               </div>
 
@@ -279,6 +311,98 @@
       </div>
     </div>
 
+    <!-- Merge Members Modal -->
+    <div v-if="showMergeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Merge Members</h3>
+        <div class="mb-4">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Merging <span class="font-semibold text-orange-600">{{ selectedMembersList.length }}</span> members into ID: {{ Math.min(...selectedMembersList.map(m => m.id)) }}
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Select which value to use for each field from the members being merged. Tags will be automatically combined.
+          </p>
+        </div>
+
+        <!-- Preview of merged member -->
+        <div class="mb-4 border border-blue-200 dark:border-blue-600 rounded-lg overflow-hidden bg-blue-50 dark:bg-blue-900/20">
+          <div class="bg-blue-100 dark:bg-blue-800 px-4 py-2">
+            <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200">Preview of Merged Member</h4>
+          </div>
+          <div class="p-4 space-y-2 text-sm">
+            <div><strong>Name:</strong> {{ previewMergedMember.name || '(empty)' }}</div>
+            <div><strong>Email:</strong> {{ previewMergedMember.email || '(empty)' }}</div>
+            <div><strong>Phone:</strong> {{ previewMergedMember.sms || '(empty)' }}</div>
+            <div><strong>Provider:</strong> {{ previewMergedMember.provider || '(empty)' }}</div>
+            <div><strong>Paid Via:</strong> {{ previewMergedMember.paid_via || '(empty)' }}</div>
+            <div><strong>How Heard:</strong> {{ previewMergedMember.how_did_you_hear || '(empty)' }}</div>
+            <div><strong>Tags:</strong> {{ previewMergedMember.tags || '(no tags)' }}</div>
+            <div class="text-xs text-gray-500 mt-2">
+              Debug - Selected members: {{ selectedMembersList.length }},
+              Raw tags: {{ selectedMembersList.map(m => m.tags).join(' | ') }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Merge Fields Table -->
+        <div class="mb-4 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+          <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2">
+            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Field Selection</h4>
+          </div>
+          <div class="max-h-96 overflow-y-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-100 dark:bg-gray-600 sticky top-0">
+                <tr>
+                  <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">Field</th>
+                  <th v-for="member in selectedMembersList" :key="member.id" class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">
+                    ID: {{ member.id }}<br>
+                    <span class="text-xs font-normal">{{ member.name || 'No Name' }}</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="field in ['name', 'email', 'sms', 'provider', 'tags', 'paid_via', 'how_did_you_hear']" :key="field" class="border-t border-gray-200 dark:border-gray-600">
+                  <td class="px-3 py-2 font-medium text-gray-900 dark:text-gray-100 capitalize">{{ field.replace('_', ' ') }}</td>
+                  <td v-if="field === 'tags'" colspan="100" class="px-3 py-2 text-center text-sm text-gray-600 dark:text-gray-400 italic">
+                    All tags from selected members will be combined automatically
+                  </td>
+                  <td v-else v-for="member in selectedMembersList" :key="member.id" class="px-3 py-2">
+                    <label class="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        :name="`merge-${field}`"
+                        :value="member.id"
+                        v-model="mergeFields[field]"
+                        class="text-orange-600 focus:ring-orange-500"
+                      />
+                      <span class="text-gray-900 dark:text-gray-100 truncate max-w-xs" :title="member[field]">
+                        {{ member[field] || '(empty)' }}
+                      </span>
+                    </label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button
+            @click="confirmMerge"
+            class="flex-1 px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium rounded-md transition-colors duration-200"
+          >
+            Merge {{ selectedMembersList.length }} Members
+          </button>
+          <button
+            @click="cancelMerge"
+            class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-md transition-colors duration-200"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading Overlay -->
     <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
@@ -338,6 +462,9 @@ const showCsvModal = ref(false)
 const csvData = ref([])
 const fileInput = ref(null)
 const nextId = ref(1)
+const selectedMembers = ref(new Set())
+const showMergeModal = ref(false)
+const mergeFields = ref({})
 
 // Computed properties
 const filteredMembers = computed(() => {
@@ -352,6 +479,55 @@ const filteredMembers = computed(() => {
 
 const hasUnsavedChanges = computed(() => {
   return members.value.some(member => member.hasChanges || member.isNew)
+})
+
+const selectedMembersList = computed(() => {
+  return members.value.filter(member => selectedMembers.value.has(member.id))
+})
+
+const canMerge = computed(() => {
+  return selectedMembersList.value.length >= 2
+})
+
+const previewMergedMember = computed(() => {
+  if (!showMergeModal.value || selectedMembersList.value.length === 0) {
+    return {}
+  }
+
+  const sortedMembers = selectedMembersList.value.sort((a, b) => a.id - b.id)
+  const preview = {}
+
+  // Always compute tags by merging all tags from all selected members
+  const allTags = new Set()
+  sortedMembers.forEach(member => {
+    if (member.tags) {
+      if (Array.isArray(member.tags)) {
+        // If tags is an array, iterate over it directly
+        member.tags.forEach(tag => {
+          if (tag && typeof tag === 'string' && tag.trim() !== '') {
+            allTags.add(tag.trim())
+          }
+        })
+      } else if (typeof member.tags === 'string' && member.tags.trim() !== '') {
+        // If tags is a string, split it by commas
+        const memberTags = member.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
+        memberTags.forEach(tag => allTags.add(tag))
+      }
+    }
+  })
+  preview.tags = Array.from(allTags).join(', ')
+
+  // Generate preview for other fields based on selections
+  for (const [field, selectedMemberId] of Object.entries(mergeFields.value)) {
+    if (field !== 'tags') { // Skip tags as we handled them above
+      const sourceMember = sortedMembers.find(m => m.id === selectedMemberId)
+      if (sourceMember) {
+        preview[field] = sourceMember[field]
+      }
+    }
+  }
+
+  return preview
 })
 
 // Methods
@@ -664,6 +840,121 @@ const confirmCsvImport = async () => {
 const cancelCsvImport = () => {
   showCsvModal.value = false
   csvData.value = []
+}
+
+// Merge functionality
+const toggleMember = (memberId) => {
+  if (selectedMembers.value.has(memberId)) {
+    selectedMembers.value.delete(memberId)
+  } else {
+    selectedMembers.value.add(memberId)
+  }
+}
+
+const toggleAllMembers = () => {
+  if (selectedMembers.value.size === members.value.length) {
+    selectedMembers.value.clear()
+  } else {
+    selectedMembers.value = new Set(members.value.map(m => m.id))
+  }
+}
+
+const openMergeModal = () => {
+  if (!canMerge.value) return
+
+  // Initialize merge fields with the first member's values as defaults
+  const sortedMembers = selectedMembersList.value.sort((a, b) => a.id - b.id)
+  const firstMember = sortedMembers[0]
+
+  mergeFields.value = {
+    name: firstMember.id,
+    email: firstMember.id,
+    sms: firstMember.id,
+    provider: firstMember.id,
+    tags: firstMember.id,
+    paid_via: firstMember.id,
+    how_did_you_hear: firstMember.id
+  }
+
+  showMergeModal.value = true
+}
+
+const confirmMerge = async () => {
+  loading.value = true
+  loadingMessage.value = 'Merging members...'
+
+  try {
+    const sortedMembers = selectedMembersList.value.sort((a, b) => a.id - b.id)
+    const targetMember = sortedMembers[0] // Member with lowest ID
+    const membersToDelete = sortedMembers.slice(1)
+
+    // Build the merged member data
+    const mergedData = {}
+
+    // Handle tags separately - always merge all tags
+    const allTags = new Set()
+    sortedMembers.forEach(member => {
+      if (member.tags) {
+        if (Array.isArray(member.tags)) {
+          // If tags is an array, iterate over it directly
+          member.tags.forEach(tag => {
+            if (tag && typeof tag === 'string' && tag.trim() !== '') {
+              allTags.add(tag.trim())
+            }
+          })
+        } else if (typeof member.tags === 'string' && member.tags.trim() !== '') {
+          // If tags is a string, split it by commas
+          const memberTags = member.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '')
+          memberTags.forEach(tag => allTags.add(tag))
+        }
+      }
+    })
+    mergedData.tags = Array.from(allTags).join(', ')
+
+    // Handle other fields based on user selection
+    for (const [field, selectedMemberId] of Object.entries(mergeFields.value)) {
+      if (field !== 'tags') { // Skip tags as we handled them above
+        const sourceMember = sortedMembers.find(m => m.id === selectedMemberId)
+        if (sourceMember) {
+          mergedData[field] = sourceMember[field]
+        }
+      }
+    }
+
+    // Update the target member with merged data
+    Object.assign(targetMember, mergedData)
+    markAsChanged(targetMember)
+
+    // Save the updated member
+    await saveMember(targetMember)
+
+    // Delete the other members
+    for (const member of membersToDelete) {
+      if (!member.isNew) {
+        await axios.delete(`/api/members/${member.id}`)
+      }
+      const index = members.value.indexOf(member)
+      if (index > -1) {
+        members.value.splice(index, 1)
+      }
+    }
+
+    // Clear selection and close modal
+    selectedMembers.value.clear()
+    showMergeModal.value = false
+
+    showNotification(`Successfully merged ${sortedMembers.length} members into ID: ${targetMember.id}`, 'success')
+  } catch (error) {
+    console.error('Merge error:', error)
+    showNotification('Error merging members: ' + (error.response?.data?.message || error.message), 'error')
+  } finally {
+    loading.value = false
+  }
+}
+
+const cancelMerge = () => {
+  showMergeModal.value = false
+  mergeFields.value = {}
 }
 
 // Simple notification system
