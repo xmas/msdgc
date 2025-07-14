@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->text('two_factor_secret')
-                ->after('password')
-                ->nullable();
+            if (!Schema::hasColumn('users', 'two_factor_secret')) {
+                $table->text('two_factor_secret')
+                    ->after('password')
+                    ->nullable();
+            }
 
             $table->text('two_factor_recovery_codes')
                 ->after('two_factor_secret')
