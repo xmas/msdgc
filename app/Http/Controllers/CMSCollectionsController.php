@@ -30,6 +30,9 @@ class CMSCollectionsController extends Controller
             }
         }
 
+        // Sort items based on tree ordering if available
+        $items = $this->sortItemsByTreeOrder($collection, $items);
+
         return response()->json([
             'success' => true,
             'collection' => $collection,
@@ -124,6 +127,63 @@ class CMSCollectionsController extends Controller
                     return asset('storage/' . $imageFile);
                 }, $data[$field]);
             }
+        }
+    }
+
+    /**
+     * Sort items based on tree ordering if available
+     */
+    private function sortItemsByTreeOrder(string $collection, array $items): array
+    {
+        $treePath = base_path("content/trees/collections/{$collection}.yaml");
+
+        if (!file_exists($treePath)) {
+            return $items; // Return unsorted if no tree file exists
+        }
+
+        try {
+            $treeContent = file_get_contents($treePath);
+            $treeData = Yaml::parse($treeContent);
+
+            if (!isset($treeData['tree']) || !is_array($treeData['tree'])) {
+                return $items; // Return unsorted if tree structure is invalid
+            }
+
+            // Extract the ordered entry IDs from the tree
+            $orderedIds = [];
+            foreach ($treeData['tree'] as $treeItem) {
+                if (isset($treeItem['entry'])) {
+                    $orderedIds[] = $treeItem['entry'];
+                }
+            }
+
+            // Create a lookup array for items by ID
+            $itemsById = [];
+            foreach ($items as $item) {
+                if (isset($item['id'])) {
+                    $itemsById[$item['id']] = $item;
+                }
+            }
+
+            // Sort items according to the tree order
+            $sortedItems = [];
+            foreach ($orderedIds as $id) {
+                if (isset($itemsById[$id])) {
+                    $sortedItems[] = $itemsById[$id];
+                    unset($itemsById[$id]); // Remove from lookup to avoid duplicates
+                }
+            }
+
+            // Add any remaining items that weren't in the tree order (at the end)
+            foreach ($itemsById as $item) {
+                $sortedItems[] = $item;
+            }
+
+            return $sortedItems;
+
+        } catch (\Exception $e) {
+            // If YAML parsing fails, return unsorted items
+            return $items;
         }
     }
 }

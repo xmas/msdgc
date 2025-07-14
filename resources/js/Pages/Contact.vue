@@ -95,7 +95,7 @@ const getIconForTitle = (title) => {
                                     :background-color="item.background_color || 'bg-gray-100'"
                                     :icon-color="item.icon_color || 'bg-gray-600'"
                                     :title-color="item.title_color || 'text-gray-800'"
-                                    :image-src="`/images/involved/${item.picture?.[0] || 'default.jpg'}`"
+                                    :image-src="`${item.picture?.[0]}`"
                                     :image-alt="item.title"
                                     :image-on-left="item.image_on_left !== false">
                                     <template #icon>
