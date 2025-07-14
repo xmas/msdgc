@@ -11,6 +11,14 @@ class TeamPolicy
     use HandlesAuthorization;
 
     /**
+     * Determine whether the user can manage the team (either owns it or is an admin).
+     */
+    protected function canManageTeam(User $user, Team $team): bool
+    {
+        return $user->ownsTeam($team) || $user->isAdmin();
+    }
+
+    /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
@@ -39,7 +47,7 @@ class TeamPolicy
      */
     public function update(User $user, Team $team): bool
     {
-        return $user->ownsTeam($team);
+        return $this->canManageTeam($user, $team);
     }
 
     /**
@@ -47,7 +55,7 @@ class TeamPolicy
      */
     public function addTeamMember(User $user, Team $team): bool
     {
-        return $user->ownsTeam($team);
+        return $this->canManageTeam($user, $team);
     }
 
     /**
@@ -55,7 +63,7 @@ class TeamPolicy
      */
     public function updateTeamMember(User $user, Team $team): bool
     {
-        return $user->ownsTeam($team);
+        return $this->canManageTeam($user, $team);
     }
 
     /**
@@ -63,7 +71,7 @@ class TeamPolicy
      */
     public function removeTeamMember(User $user, Team $team): bool
     {
-        return $user->ownsTeam($team);
+        return $this->canManageTeam($user, $team);
     }
 
     /**
@@ -71,6 +79,6 @@ class TeamPolicy
      */
     public function delete(User $user, Team $team): bool
     {
-        return $user->ownsTeam($team);
+        return $this->canManageTeam($user, $team);
     }
 }
