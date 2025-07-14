@@ -182,4 +182,50 @@ class User extends Authenticatable
     {
         return $this->isAdmin();
     }
+
+    /**
+     * Create a passwordless user
+     */
+    public static function createPasswordlessUser(string $name, ?string $email = null, ?string $sms = null): self
+    {
+        $userData = [
+            'name' => $name,
+            'password' => null, // No password for passwordless users
+        ];
+
+        if ($email) {
+            $userData['email'] = $email;
+            $userData['email_verified_at'] = now(); // Auto-verify since they accessed via email link
+        }
+
+        if ($sms) {
+            $userData['sms'] = $sms;
+        }
+
+        return static::create($userData);
+    }
+
+    /**
+     * Check if user uses passwordless authentication
+     */
+    public function isPasswordless(): bool
+    {
+        return is_null($this->password);
+    }
+
+    /**
+     * Check if user can login via email
+     */
+    public function canLoginViaEmail(): bool
+    {
+        return !is_null($this->email);
+    }
+
+    /**
+     * Check if user can login via SMS
+     */
+    public function canLoginViaSms(): bool
+    {
+        return !is_null($this->sms);
+    }
 }

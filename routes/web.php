@@ -4,6 +4,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\PasswordlessLoginController;
 
 Route::get('/', function () {
     Log::info(config('app.debug'));
@@ -42,3 +43,28 @@ Route::middleware([
     Route::get('/messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/send', [App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
 });
+
+// Passwordless login routes
+Route::get('/passwordless-login', [PasswordlessLoginController::class, 'show'])
+    ->middleware('guest')
+    ->name('passwordless.show');
+
+Route::post('/passwordless-login', [PasswordlessLoginController::class, 'sendLink'])
+    ->middleware(['guest', 'throttle:5,1'])
+    ->name('passwordless.send-link');
+
+Route::get('/login/{token}', [PasswordlessLoginController::class, 'login'])
+    ->middleware('guest')
+    ->name('passwordless.login');
+
+Route::get('/complete-signup/{token}', [PasswordlessLoginController::class, 'collectName'])
+    ->middleware('guest')
+    ->name('passwordless.collect-name');
+
+Route::post('/complete-signup/{token}', [PasswordlessLoginController::class, 'completeName'])
+    ->middleware('guest')
+    ->name('passwordless.complete-name');
+
+Route::post('/resend-passwordless-link', [PasswordlessLoginController::class, 'resendLink'])
+    ->middleware(['guest', 'throttle:3,1'])
+    ->name('passwordless.resend-link');
