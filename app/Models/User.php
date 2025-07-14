@@ -141,9 +141,9 @@ class User extends Authenticatable
             $adminTeam->users()->attach($this);
         }
 
-        // Keep current team as member team (don't switch to admin team)
-        if ($memberTeam && $this->current_team_id !== $memberTeam->id) {
-            $this->switchTeam($memberTeam);
+        // Switch current team to admin team
+        if ($adminTeam && $this->current_team_id !== $adminTeam->id) {
+            $this->switchTeam($adminTeam);
         }
 
         return $this;
