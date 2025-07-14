@@ -26,6 +26,23 @@ defineProps({
     },
 });
 
+import { ref, onMounted } from 'vue';
+
+const sponsors = ref([]);
+
+onMounted(async () => {
+    try {
+        const response = await fetch('/api/sponsors');
+        if (response.ok) {
+            sponsors.value = await response.json();
+        } else {
+            console.error('Failed to fetch sponsors');
+        }
+    } catch (error) {
+        console.error('Error fetching sponsors:', error);
+    }
+});
+
 function handleImageError() {
     document.getElementById('screenshot-container')?.classList.add('!hidden');
     document.getElementById('docs-card')?.classList.add('!row-span-1');

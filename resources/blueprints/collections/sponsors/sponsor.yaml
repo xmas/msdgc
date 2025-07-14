@@ -1,0 +1,50 @@
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: title
+            field:
+              type: text
+              required: true
+              validate:
+                - required
+          -
+            handle: sponsor_name
+            field:
+              type: text
+              display: 'Sponsor name'
+              listable: true
+          -
+            handle: web_site
+            field:
+              type: link
+              display: 'Web site'
+              listable: true
+          -
+            handle: driving_directions
+            field:
+              type: link
+              display: 'Driving directions'
+              listable: true
+          -
+            handle: logo
+            field:
+              container: logos
+              type: assets
+              display: Logo
+              listable: true
+  sidebar:
+    display: Sidebar
+    sections:
+      -
+        fields:
+          -
+            handle: slug
+            field:
+              type: slug
+              localizable: true
+              validate: 'max:200'
+title: Sponsor
