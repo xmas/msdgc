@@ -24,6 +24,8 @@
         "vue": "^3.3.13"
     },
     "dependencies": {
-        "@tailwindcss/postcss": "^4.1.11"
+        "@tailwindcss/postcss": "^4.1.11",
+        "papaparse": "^5.5.3",
+        "vue3-virtual-scroller": "^0.2.3"
     }
 }

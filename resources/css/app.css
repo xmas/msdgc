@@ -8,6 +8,10 @@
     display: none;
 }
 
+.text-msdgc-blue {
+    color: #3477f4;
+}
+
 & *::selection {
     background-color: #b1a6a668;
 }

@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import Welcome from '@/Components/Welcome.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Link } from '@inertiajs/vue3';
+import MemberList from '@/Functions/MemberList.vue';
 
 
 defineProps({
@@ -15,8 +16,8 @@ defineProps({
 <template>
     <AppLayout title="Dashboard">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                Welcome back, {{ $attrs.auth.user.name }}
+            <h2 class="font-semibold text-4xl text-msdgc-blue dark:text-gray-200 leading-tight bangers">
+                <span class="text-blue-400">Welcome back,</span> {{ $attrs.auth.user.name }}
             </h2>
         </template>
 
@@ -54,7 +55,7 @@ defineProps({
                                     </p>
                                     <div class="mt-3">
                                         <Link :href="route('messages.index')">
-                                            <PrimaryButton>
+                                            <PrimaryButton class="bangers">
                                                 Send Messages
                                             </PrimaryButton>
                                         </Link>
@@ -131,6 +132,10 @@ defineProps({
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="py-12" v-if="$attrs.auth.user.is_admin">
+            <MemberList />
         </div>
     </AppLayout>
 </template>

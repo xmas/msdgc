@@ -33,6 +33,11 @@ Route::middleware([
         ]);
     })->name('dashboard');
 
+    // Members management route
+    Route::get('/members', function () {
+        return Inertia::render('Members');
+    })->name('members');
+
     // Messages routes
     Route::get('/messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/send', [App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
