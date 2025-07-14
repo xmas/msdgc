@@ -4,7 +4,7 @@ import PublicLayout from '@/Layouts/PublicLayout.vue';
 import VolunteerCard from '@/Components/VolunteerCard.vue';
 
 
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const getinvolved = ref([]);
 
@@ -20,6 +20,40 @@ onMounted(async () => {
         console.error('Error fetching getinvolved:', error);
     }
 });
+
+// Function to get the appropriate icon for each volunteer opportunity
+const getIconForTitle = (title) => {
+    const icons = {
+        'Telecommunications': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+        </svg>`,
+        'Social Media': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h3a1 1 0 011 1v2h3a1 1 0 011 1v3a1 1 0 01-1 1h-3v3a1 1 0 01-1 1H8a1 1 0 01-1-1v-3H4a1 1 0 01-1-1V5a1 1 0 011-1h3z"></path>
+        </svg>`,
+        'Digital Media Design': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>`,
+        'League and Event Organizers': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>`,
+        'Merchandise Creators': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+        </svg>`,
+        'Course Layout & Design': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+        </svg>`,
+        'Coaching & Community Outreach': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>`,
+        'Course Maintenance': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+        </svg>`,
+        'Inventory/Supplies': `<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+        </svg>`
+    };
+    return icons[title] || icons['Telecommunications'];
+};
 
 </script>
 
@@ -54,228 +88,29 @@ onMounted(async () => {
                                 </div>
                             </div>
 
-                            <!-- Telecommunications -->
-                            <VolunteerCard
-                                title="Telecommunications"
-                                background-color="bg-green-100"
-                                icon-color="bg-green-600"
-                                title-color="text-green-800"
-                                image-src="/images/involved/telecomm.jpeg"
-                                image-alt="Telecommunications"
-                                :image-on-left="false">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Email Campaigns</li>
-                                        <li>Website Editing & Maintenance</li>
-                                        <li>Calendar updating</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>
-
-
-                            <!-- Social Media -->
-                            <VolunteerCard
-                                title="Social Media"
-                                background-color="bg-purple-100"
-                                icon-color="bg-purple-600"
-                                title-color="text-purple-800"
-                                image-src="/images/involved/social_media.jpeg"
-                                image-alt="Social Media"
-                                :image-on-left="true">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M7 4V2a1 1 0 011-1h3a1 1 0 011 1v2h3a1 1 0 011 1v3a1 1 0 01-1 1h-3v3a1 1 0 01-1 1H8a1 1 0 01-1-1v-3H4a1 1 0 01-1-1V5a1 1 0 011-1h3z">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Create/maintain Instagram</li>
-                                        <li>Create/maintain Twitter</li>
-                                        <li>Facebook management</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>                            <!-- Digital Media Design -->
-                            <VolunteerCard
-                                title="Digital Media Design"
-                                background-color="bg-pink-100"
-                                icon-color="bg-pink-600"
-                                title-color="text-pink-800"
-                                image-src="/images/involved/media.jpeg"
-                                image-alt="Digital Media Design"
-                                :image-on-left="false">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Flyers</li>
-                                        <li>Course Signage</li>
-                                        <li>YouTube content creation</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>
-
-                            <!-- League and Event Organizers -->
-                            <VolunteerCard
-                                title="League and Event Organizers"
-                                background-color="bg-orange-100"
-                                icon-color="bg-orange-600"
-                                title-color="text-orange-800"
-                                image-src="/images/involved/organize.jpeg"
-                                image-alt="League and Event Organizers"
-                                :image-on-left="true">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Handicapped leagues/rounds</li>
-                                        <li>Fun league</li>
-                                        <li>Women's league</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>
-
-                            <!-- Merchandise Creators -->
-                            <VolunteerCard
-                                title="Merchandise Creators"
-                                background-color="bg-red-100"
-                                icon-color="bg-red-600"
-                                title-color="text-red-800"
-                                image-src="/images/involved/merch.jpg"
-                                image-alt="Merchandise Creators"
-                                :image-on-left="false">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Hot stamp press</li>
-                                        <li>Hats, beanies, shirts, hoodies, towels etc</li>
-                                        <li>Discs/mini's</li>
-                                        <li>Stickers & decals</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>                            <!-- Course Layout & Design -->
-                            <VolunteerCard
-                                title="Course Layout & Design"
-                                background-color="bg-teal-100"
-                                icon-color="bg-teal-600"
-                                title-color="text-teal-800"
-                                image-src="/images/involved/course.jpeg"
-                                image-alt="Course Layout & Design"
-                                :image-on-left="true">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Alternate Layouts</li>
-                                        <li>Short baskets, ace runs, extreme OB</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>
-
-                            <!-- Coaching & Community Outreach -->
-                            <VolunteerCard
-                                title="Coaching & Community Outreach"
-                                background-color="bg-indigo-100"
-                                icon-color="bg-indigo-600"
-                                title-color="text-indigo-800"
-                                image-src="/images/involved/outreach.jpeg"
-                                image-alt="Coaching & Community Outreach"
-                                :image-on-left="false">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Kids/Teen Outreach</li>
-                                        <li>New Player Outreach & Coaching</li>
-                                        <li>Putting Clinic</li>
-                                        <li>Forehand Clinic</li>
-                                        <li>Distance Clinic</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>
-
-                            <!-- Course Maintenance -->
-                            <VolunteerCard
-                                title="Course Maintenance"
-                                background-color="bg-yellow-100"
-                                icon-color="bg-yellow-600"
-                                title-color="text-yellow-800"
-                                image-src="/images/involved/maintain.jpg"
-                                image-alt="Course Maintenance"
-                                :image-on-left="true">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Organize & Participate in Work Parties</li>
-                                        <li>Help with Projects like tee pad replacement/repair</li>
-                                        <li>Build Benches, Walls, Pathways</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>
-
-                            <!-- Inventory/Supplies -->
-                            <VolunteerCard
-                                title="Inventory/Supplies"
-                                background-color="bg-gray-100"
-                                icon-color="bg-gray-600"
-                                title-color="text-gray-800"
-                                image-src="/images/involved/inventory.jpg"
-                                image-alt="Inventory/Supplies"
-                                :image-on-left="false">
-                                <template #icon>
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4">
-                                        </path>
-                                    </svg>
-                                </template>
-                                <template #content>
-                                    <ul class="list-disc list-inside space-y-2">
-                                        <li>Glow Lights</li>
-                                        <li>Batteries</li>
-                                        <li>Flags</li>
-                                    </ul>
-                                </template>
-                            </VolunteerCard>
+                            <!-- Dynamic Volunteer Cards from API -->
+                            <template v-for="item in getinvolved.items" :key="item.id">
+                                <VolunteerCard
+                                    :title="item.title"
+                                    :background-color="item.background_color || 'bg-gray-100'"
+                                    :icon-color="item.icon_color || 'bg-gray-600'"
+                                    :title-color="item.title_color || 'text-gray-800'"
+                                    :image-src="`/images/involved/${item.picture?.[0] || 'default.jpg'}`"
+                                    :image-alt="item.title"
+                                    :image-on-left="item.image_on_left !== false">
+                                    <template #icon>
+                                        <div v-html="getIconForTitle(item.title)"></div>
+                                    </template>
+                                    <template #content>
+                                        <ul class="list-disc list-inside space-y-2">
+                                            <li v-for="contentItem in item.content.split('\n').filter(line => line.trim().startsWith('-'))"
+                                                :key="contentItem"
+                                                v-text="contentItem.replace(/^- /, '')">
+                                            </li>
+                                        </ul>
+                                    </template>
+                                </VolunteerCard>
+                            </template>
 
                             <!-- Contact Section -->
                             <div class="flex flex-col items-start gap-6 overflow-hidden rounded-lg p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] bg-gray-800 text-white">

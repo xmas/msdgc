@@ -22,6 +22,34 @@ tabs:
               container: get_involved_images
               type: assets
               display: Picture
+          -
+            handle: background_color
+            field:
+              type: text
+              display: 'Background Color'
+              instructions: 'Tailwind CSS background color class (e.g., bg-green-100)'
+              default: 'bg-gray-100'
+          -
+            handle: icon_color
+            field:
+              type: text
+              display: 'Icon Color'
+              instructions: 'Tailwind CSS background color class for icon (e.g., bg-green-600)'
+              default: 'bg-gray-600'
+          -
+            handle: title_color
+            field:
+              type: text
+              display: 'Title Color'
+              instructions: 'Tailwind CSS text color class (e.g., text-green-800)'
+              default: 'text-gray-800'
+          -
+            handle: image_on_left
+            field:
+              type: toggle
+              display: 'Image on Left'
+              instructions: 'Whether to display the image on the left side of the card'
+              default: false
   sidebar:
     display: Sidebar
     sections:
