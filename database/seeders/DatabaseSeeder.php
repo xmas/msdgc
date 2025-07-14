@@ -13,6 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // First create the default teams
+        $this->call(DefaultTeamsSeeder::class);
+
         // User::factory(10)->withPersonalTeam()->create();
 
         User::factory()->withPersonalTeam()->create([

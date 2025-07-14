@@ -38,6 +38,7 @@ class User extends Authenticatable
         'how_did_you_hear',
         'paid_via',
         'tags',
+        'is_super_admin',
     ];
 
     /**
@@ -59,6 +60,7 @@ class User extends Authenticatable
      */
     protected $appends = [
         'profile_photo_url',
+        'is_admin',
     ];
 
     /**
@@ -74,6 +76,110 @@ class User extends Authenticatable
             'sms_opt_in' => 'boolean',
             'email_opt_in' => 'boolean',
             'tags' => 'array',
+            'is_super_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Check if user is a super admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->is_super_admin;
+    }
+
+    /**
+     * Check if user is an admin (member of admin team)
+     */
+    public function isAdmin(): bool
+    {
+        $adminTeam = Team::adminTeam();
+        return $adminTeam && $this->belongsToTeam($adminTeam);
+    }
+
+    /**
+     * Check if user can access control panel
+     */
+    public function canAccessControlPanel(): bool
+    {
+        return $this->isAdmin() && $this->isSuperAdmin();
+    }
+
+    /**
+     * Make user a super admin
+     */
+    public function makeSuperAdmin(): self
+    {
+        $this->update(['is_super_admin' => true]);
+        return $this;
+    }
+
+    /**
+     * Remove super admin privileges
+     */
+    public function removeSuperAdmin(): self
+    {
+        $this->update(['is_super_admin' => false]);
+        return $this;
+    }
+
+    /**
+     * Add user to admin team
+     */
+    public function makeAdmin(): self
+    {
+        $adminTeam = Team::adminTeam();
+        $memberTeam = Team::memberTeam();
+
+        // Ensure user is on member team (all users should be)
+        if ($memberTeam && !$this->belongsToTeam($memberTeam)) {
+            $memberTeam->users()->attach($this);
+        }
+
+        // Add user to admin team
+        if ($adminTeam && !$this->belongsToTeam($adminTeam)) {
+            $adminTeam->users()->attach($this);
+        }
+
+        // Keep current team as member team (don't switch to admin team)
+        if ($memberTeam && $this->current_team_id !== $memberTeam->id) {
+            $this->switchTeam($memberTeam);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove user from admin team
+     */
+    public function removeAdmin(): self
+    {
+        $adminTeam = Team::adminTeam();
+        $memberTeam = Team::memberTeam();
+
+        // Remove from admin team
+        if ($adminTeam && $this->belongsToTeam($adminTeam)) {
+            $adminTeam->users()->detach($this);
+        }
+
+        // Ensure user stays on member team
+        if ($memberTeam && !$this->belongsToTeam($memberTeam)) {
+            $memberTeam->users()->attach($this);
+        }
+
+        // Switch current team to member team
+        if ($memberTeam && $this->current_team_id !== $memberTeam->id) {
+            $this->switchTeam($memberTeam);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Get the is_admin attribute for the user.
+     */
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->isAdmin();
     }
 }

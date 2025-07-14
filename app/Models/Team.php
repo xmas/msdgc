@@ -13,6 +13,9 @@ class Team extends JetstreamTeam
     /** @use HasFactory<\Database\Factories\TeamFactory> */
     use HasFactory;
 
+    const TYPE_ADMIN = 'admin';
+    const TYPE_MEMBER = 'member';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,6 +24,8 @@ class Team extends JetstreamTeam
     protected $fillable = [
         'name',
         'personal_team',
+        'type',
+        'is_system_team',
     ];
 
     /**
@@ -43,6 +48,43 @@ class Team extends JetstreamTeam
     {
         return [
             'personal_team' => 'boolean',
+            'is_system_team' => 'boolean',
         ];
+    }
+
+    /**
+     * Check if this is an admin team
+     */
+    public function isAdminTeam(): bool
+    {
+        return $this->type === self::TYPE_ADMIN;
+    }
+
+    /**
+     * Check if this is a member team
+     */
+    public function isMemberTeam(): bool
+    {
+        return $this->type === self::TYPE_MEMBER;
+    }
+
+    /**
+     * Get the admin team
+     */
+    public static function adminTeam(): ?Team
+    {
+        return static::where('type', self::TYPE_ADMIN)
+                     ->where('is_system_team', true)
+                     ->first();
+    }
+
+    /**
+     * Get the member team
+     */
+    public static function memberTeam(): ?Team
+    {
+        return static::where('type', self::TYPE_MEMBER)
+                     ->where('is_system_team', true)
+                     ->first();
     }
 }
