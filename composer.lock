@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "65681109e353e69f16b36eef4cd1e6cf",
+    "content-hash": "15ef6a4f74b06b2f385c9ddaaad02335",
     "packages": [
         {
             "name": "ajthinking/archetype",

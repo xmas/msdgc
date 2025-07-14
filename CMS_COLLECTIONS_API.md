@@ -55,6 +55,7 @@ Returns a specific item by ID from a collection.
     "updated_by": 1,
     "updated_at": 1752465315,
     "content": "- Email Campaigns\n- Website Editing & Maintenance\n- Calendar updating",
+    "content_html": "<ul>\n<li>Email Campaigns</li>\n<li>Website Editing &amp; Maintenance</li>\n<li>Calendar updating</li>\n</ul>\n",
     "filename": "telecommunications"
   }
 }
@@ -90,12 +91,28 @@ Currently available collections:
 
 - ✅ Generic collection support
 - ✅ Parses YAML frontmatter from markdown files
-- ✅ Includes markdown content if present
+- ✅ **Markdown to HTML conversion** - `content` field is parsed and returned as both raw markdown and HTML
+- ✅ Includes markdown content if present (`content` and `content_html` fields)
 - ✅ Automatically processes image URLs with storage prefix
 - ✅ Supports multiple image field names (logo, picture, image, images, photo, photos)
 - ✅ Adds filename for reference
 - ✅ Handles errors gracefully
 - ✅ Returns structured JSON responses
+
+### Content Processing
+
+When a markdown file has content below the frontmatter, it's processed as follows:
+- `content` - Raw markdown content
+- `content_html` - Parsed HTML from the markdown
+
+**Supported Markdown Features:**
+- Headers (`# ## ###`)
+- **Bold** and *italic* formatting
+- Lists (ordered and unordered)
+- Links `[text](url)`
+- Code blocks with syntax highlighting
+- Blockquotes
+- And all other CommonMark features
 
 ## Usage Examples
 

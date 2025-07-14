@@ -32,7 +32,7 @@ const sponsors = ref([]);
 
 onMounted(async () => {
     try {
-        const response = await fetch('/api/sponsors');
+        const response = await fetch('/api/collections/sponsors');
         if (response.ok) {
             sponsors.value = await response.json();
         } else {

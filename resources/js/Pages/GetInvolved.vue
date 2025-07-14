@@ -4,6 +4,25 @@ import { Head, Link } from '@inertiajs/vue3';
 const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] text-black"
 const headerStyle = "flex items-center justify-center"
 const navStyle = ""
+
+import { ref, onMounted } from 'vue';
+
+const getinvolved = ref([]);
+
+onMounted(async () => {
+    try {
+        const response = await fetch('/api/collections/getinvolved');
+        if (response.ok) {
+            getinvolved.value = await response.json();
+        } else {
+            console.error('Failed to fetch getinvolved');
+        }
+    } catch (error) {
+        console.error('Error fetching getinvolved:', error);
+    }
+});
+
+
 </script>
 
 <template>

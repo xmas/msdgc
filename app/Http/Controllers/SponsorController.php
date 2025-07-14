@@ -85,6 +85,13 @@ class SponsorController extends Controller
                 // Add filename for reference
                 $data['filename'] = basename($filePath, '.md');
 
+                // Process logo URLs to include storage prefix
+                if (isset($data['logo']) && is_array($data['logo'])) {
+                    $data['logo'] = array_map(function($logoFile) {
+                        return asset('storage/' . $logoFile);
+                    }, $data['logo']);
+                }
+
                 return $data;
             } catch (\Exception $e) {
                 // If YAML parsing fails, skip this file
