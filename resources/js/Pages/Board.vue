@@ -1,18 +1,39 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/Layouts/PublicLayout.vue';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 
 const minutes = ref([]);
 const loading = ref(true);
 const error = ref(null);
+const collapsedYears = ref(new Set());
 
 onMounted(async () => {
     try {
         const response = await fetch('/api/collections/board_minutes');
         if (response.ok) {
             const data = await response.json();
-            minutes.value = data.items || [];
+            // Sort minutes newest to oldest by date_of_meeting
+            minutes.value = (data.items || []).sort((a, b) => {
+                const dateA = new Date(a.date_of_meeting || 0);
+                const dateB = new Date(b.date_of_meeting || 0);
+                return dateB - dateA;
+            });
+
+            // Initialize collapsed years - collapse all except current year
+            const currentYear = new Date().getFullYear();
+            const yearsToCollapse = new Set();
+
+            minutes.value.forEach(minute => {
+                if (minute.date_of_meeting) {
+                    const year = new Date(minute.date_of_meeting).getFullYear();
+                    if (year !== currentYear) {
+                        yearsToCollapse.add(year.toString());
+                    }
+                }
+            });
+
+            collapsedYears.value = yearsToCollapse;
         } else {
             error.value = 'Failed to fetch board minutes';
         }
@@ -30,6 +51,40 @@ const formatDate = (dateString) => {
         month: 'long',
         day: 'numeric'
     });
+};
+
+// Group minutes by year
+const minutesByYear = computed(() => {
+    const grouped = {};
+    minutes.value.forEach(minute => {
+        if (minute.date_of_meeting) {
+            const year = new Date(minute.date_of_meeting).getFullYear();
+            if (!grouped[year]) {
+                grouped[year] = [];
+            }
+            grouped[year].push(minute);
+        }
+    });
+
+    // Sort years newest to oldest and return as array
+    return Object.keys(grouped)
+        .sort((a, b) => parseInt(b) - parseInt(a))
+        .map(year => ({
+            year,
+            minutes: grouped[year]
+        }));
+});
+
+const toggleYear = (year) => {
+    if (collapsedYears.value.has(year)) {
+        collapsedYears.value.delete(year);
+    } else {
+        collapsedYears.value.add(year);
+    }
+};
+
+const isYearCollapsed = (year) => {
+    return collapsedYears.value.has(year);
 };
 
 const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] text-black";
@@ -107,50 +162,84 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                         {{ error }}
                                     </div>
 
-                                    <div v-else-if="minutes.length === 0" class="text-gray-500 text-center py-8">
+                                    <div v-else-if="minutesByYear.length === 0" class="text-gray-500 text-center py-8">
                                         No board meeting minutes available yet.
                                     </div>
 
-                                    <div v-else class="space-y-4">
+                                    <div v-else class="space-y-6">
+                                        <!-- Year Sections -->
                                         <div
-                                            v-for="minute in minutes"
-                                            :key="minute.id"
-                                            class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                                            v-for="yearGroup in minutesByYear"
+                                            :key="yearGroup.year"
+                                            class="border border-gray-200 rounded-lg overflow-hidden"
                                         >
-                                            <div class="flex justify-between items-start">
-                                                <div class="flex-1">
-                                                    <h3 class="text-xl font-semibold text-gray-800 mb-2">
-                                                        {{ minute.title }}
-                                                    </h3>
+                                            <!-- Year Header -->
+                                            <button
+                                                @click="toggleYear(yearGroup.year)"
+                                                class="w-full px-4 py-3 bg-gray-50 hover:bg-gray-100 transition-colors text-left flex items-center justify-between"
+                                            >
+                                                <h2 class="text-xl font-semibold text-gray-800">
+                                                    {{ yearGroup.year }} ({{ yearGroup.minutes.length }} meeting{{ yearGroup.minutes.length === 1 ? '' : 's' }})
+                                                </h2>
+                                                <svg
+                                                    class="w-5 h-5 transform transition-transform duration-200"
+                                                    :class="{ 'rotate-180': !isYearCollapsed(yearGroup.year) }"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                                </svg>
+                                            </button>
 
-                                                    <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
-                                                        <div v-if="minute.date_of_meeting" class="flex items-center">
-                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                                            </svg>
-                                                            <span>{{ formatDate(minute.date_of_meeting) }}</span>
-                                                        </div>
+                                            <!-- Year Content -->
+                                            <div
+                                                v-show="!isYearCollapsed(yearGroup.year)"
+                                                class="border-t border-gray-200"
+                                            >
+                                                <div class="p-4 space-y-4">
+                                                    <div
+                                                        v-for="minute in yearGroup.minutes"
+                                                        :key="minute.id"
+                                                        class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                                                    >
+                                                        <div class="flex justify-between items-start">
+                                                            <div class="flex-1">
+                                                                <h3 class="text-xl font-semibold text-gray-800 mb-2">
+                                                                    {{ minute.title }}
+                                                                </h3>
 
-                                                        <div v-if="minute.present" class="flex items-center">
-                                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                                            </svg>
-                                                            <span>{{ minute.present.split('\n').length }} attendees</span>
+                                                                <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
+                                                                    <div v-if="minute.date_of_meeting" class="flex items-center">
+                                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                                        </svg>
+                                                                        <span>{{ formatDate(minute.date_of_meeting) }}</span>
+                                                                    </div>
+
+                                                                    <div v-if="minute.present" class="flex items-center">
+                                                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                                        </svg>
+                                                                        <span>{{ minute.present.split('\n').length }} attendees</span>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- <div v-if="minute.content" class="text-gray-700 text-sm line-clamp-3">
+                                                                    {{ minute.content.substring(0, 200) }}{{ minute.content.length > 200 ? '...' : '' }}
+                                                                </div> -->
+                                                            </div>
+
+                                                            <div class="ml-4 flex-shrink-0">
+                                                                <Link
+                                                                    :href="route('board.minutes.show', minute.id)"
+                                                                    class="btn-primary bangers text-3xl"
+                                                                >
+                                                                    View Minutes
+                                                                </Link>
+                                                            </div>
                                                         </div>
                                                     </div>
-
-                                                    <!-- <div v-if="minute.content" class="text-gray-700 text-sm line-clamp-3">
-                                                        {{ minute.content.substring(0, 200) }}{{ minute.content.length > 200 ? '...' : '' }}
-                                                    </div> -->
-                                                </div>
-
-                                                <div class="ml-4 flex-shrink-0">
-                                                    <Link
-                                                        :href="route('board.minutes.show', minute.id)"
-                                                        class="btn-primary bangers text-3xl"
-                                                    >
-                                                        View Minutes
-                                                    </Link>
                                                 </div>
                                             </div>
                                         </div>
