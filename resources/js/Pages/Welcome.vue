@@ -29,6 +29,8 @@ defineProps({
 import { ref, onMounted } from 'vue';
 
 const sponsors = ref([]);
+const minutes = ref([]);
+
 
 onMounted(async () => {
     try {
@@ -41,6 +43,18 @@ onMounted(async () => {
     } catch (error) {
         console.error('Error fetching sponsors:', error);
     }
+    try {
+        const response = await fetch('/api/collections/board_minutes');
+        if (response.ok) {
+            minutes.value = await response.json();
+        } else {
+            console.error('Failed to fetch board minutes');
+        }
+    } catch (error) {
+        console.error('Error fetching board minutes:', error);
+    }
+
+
 });
 
 function handleImageError() {

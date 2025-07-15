@@ -134,6 +134,8 @@ const headerStyle = "flex items-center justify-center"
                     <a href="https://calendar.google.com/calendar/u/0/embed?src=495b1ab477f0effe46de4b97a8ae37ab1229210525dba1f4b8a558828ae8387f@group.calendar.google.com&ctz=America/Los_Angeles"
                         :class="navStyle" target="_blank" rel="noopener">Calendar</a>
                     <span class="hidden lg:flex text-white/70">|</span>
+                    <Link :href="route('board')" class="hidden lg:flex" :class="navStyle">Board</Link>
+                    <span class="hidden lg:flex text-white/70">|</span>
                     <a href="#lost-found" class="hidden lg:flex" :class="navStyle">Lost and Found</a>
                     <span class="hidden lg:flex text-white/70">|</span>
                     <a href="#membership" class="hidden lg:flex" :class="navStyle">Club Membership</a>
@@ -162,6 +164,7 @@ const headerStyle = "flex items-center justify-center"
                     <ul class="space-y-2">
                         <li><a href="#course" class="hover:underline">Course Map</a></li>
                         <li><a href="https://calendar.google.com/calendar/u/0/embed?src=495b1ab477f0effe46de4b97a8ae37ab1229210525dba1f4b8a558828ae8387f@group.calendar.google.com&ctz=America/Los_Angeles" target="_blank" rel="noopener" class="hover:underline">Calendar</a></li>
+                        <li><Link :href="route('board')" class="hover:underline">Board</Link></li>
                         <li><a href="#lost-found" class="hover:underline">Lost and Found</a></li>
                         <li><a href="#membership" class="hover:underline">Club Membership</a></li>
                         <li><Link :href="route('contact')" class="hover:underline">Get Involved</Link></li>

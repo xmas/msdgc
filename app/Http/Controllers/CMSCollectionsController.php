@@ -97,6 +97,9 @@ class CMSCollectionsController extends Controller
                     $data['content_html'] = $converter->convert($body)->getContent();
                 }
 
+                // Convert specific markdown fields to HTML
+                $this->convertMarkdownFields($data);
+
                 // Add filename for reference
                 $data['filename'] = basename($filePath, '.md');
 
@@ -127,6 +130,40 @@ class CMSCollectionsController extends Controller
                     return asset('storage/' . $imageFile);
                 }, $data[$field]);
             }
+        }
+    }
+
+    /**
+     * Convert specific markdown fields to HTML
+     */
+    private function convertMarkdownFields(array &$data): void
+    {
+        $converter = new CommonMarkConverter();
+
+        // Fields that should be converted from markdown to HTML
+        $markdownFields = ['content', 'financial_report', 'old_business', 'new_business', 'announcements'];
+
+        foreach ($markdownFields as $field) {
+            if (isset($data[$field]) && is_string($data[$field]) && !empty($data[$field])) {
+                // Convert markdown to HTML and store it
+                $data[$field] = $converter->convert($data[$field])->getContent();
+            }
+        }
+
+        // Handle the 'present' field specially - convert line breaks to HTML
+        if (isset($data['present']) && is_string($data['present']) && !empty($data['present'])) {
+            // Split by double line breaks to create paragraphs, then convert single line breaks to <br>
+            $present = $data['present'];
+            $paragraphs = explode("\n\n", $present);
+            $htmlParagraphs = array_map(function($paragraph) {
+                $paragraph = trim($paragraph);
+                if (empty($paragraph)) return '';
+                // Convert single line breaks to <br> tags
+                $paragraph = nl2br($paragraph);
+                return "<p>{$paragraph}</p>";
+            }, $paragraphs);
+
+            $data['present'] = implode("\n", array_filter($htmlParagraphs));
         }
     }
 

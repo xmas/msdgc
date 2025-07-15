@@ -22,6 +22,16 @@ Route::get('/contact', function () {
     return Inertia::render('Contact');
 })->name('contact');
 
+Route::get('/board', function () {
+    return Inertia::render('Board');
+})->name('board');
+
+Route::get('/board/minutes/{id}', function (string $id) {
+    return Inertia::render('BoardMinutes', [
+        'minuteId' => $id,
+    ]);
+})->name('board.minutes.show');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
