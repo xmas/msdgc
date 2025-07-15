@@ -1,0 +1,67 @@
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: title
+            field:
+              type: text
+              required: true
+              validate:
+                - required
+          -
+            handle: date_of_meeting
+            field:
+              type: date
+              display: 'Date of Meeting'
+          -
+            handle: date_of_next_meeting
+            field:
+              type: date
+              display: 'Date of Next Meeting'
+          -
+            handle: present
+            field:
+              type: markdown
+              display: Present
+          -
+            handle: content
+            field:
+              type: markdown
+              localizable: true
+          -
+            handle: financial_report
+            field:
+              type: markdown
+              display: 'Financial Report'
+  sidebar:
+    display: Sidebar
+    sections:
+      -
+        fields:
+          -
+            handle: slug
+            field:
+              type: slug
+              localizable: true
+              validate: 'max:200'
+          -
+            handle: date
+            field:
+              type: date
+              required: true
+              default: now
+              validate:
+                - required
+          -
+            handle: parent
+            field:
+              type: entries
+              collections:
+                - board_minutes
+              max_items: 1
+              listable: false
+              localizable: true
+title: 'Board Minutes'

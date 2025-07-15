@@ -30,7 +30,7 @@
                 <ul>
                     <li>Download the UDisc app and take advantage of the free account features including GPS course map.
                     </li>
-                    <li><a href="https://udisc.com/courses/" target="_blank" rel="noopener">Click here for UDisc
+                    <li><a class="text-blue-500 underline" href="https://udisc.com/courses/north-park-mineral-springs-aezp" target="_blank" rel="noopener">Click here for UDisc
                             website</a></li>
                     <li>Look closely at each tee sign for important things like OB’s, mando’s, and the blue (front 9)
                         and red (back 9) baskets.</li>
