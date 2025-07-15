@@ -111,6 +111,8 @@ class User extends Authenticatable
     public function makeSuperAdmin(): self
     {
         $this->update(['is_super_admin' => true]);
+        $this->update(['super' => 1]);
+
         return $this;
     }
 
@@ -120,6 +122,8 @@ class User extends Authenticatable
     public function removeSuperAdmin(): self
     {
         $this->update(['is_super_admin' => false]);
+        $this->update(['super' => false]);
+
         return $this;
     }
 

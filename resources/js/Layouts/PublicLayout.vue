@@ -81,7 +81,7 @@ const headerStyle = "flex items-center justify-center"
             </nav>
         </header>
         <!-- Sponsors Header Bar -->
-        <header class="w-full bg-zinc-800 py-2 px-4 flex items-center justify-center">
+        <header v-if="false" class="w-full bg-zinc-800 py-2 px-4 flex items-center justify-center">
             <div class="flex flex-wrap items-center gap-6 justify-center w-full max-w-6xl">
                 <span class="font-semibold text-white mr-4">Proudly sponsored by:</span>
                 <a href="https://flexlinediscs.com" target="_blank" rel="noopener" class="flex items-center bg-white rounded-sm px-3 py-1">

@@ -12,22 +12,15 @@ tabs:
               validate:
                 - required
           -
-            handle: sponsor_name
+            handle: is_pro_shop
             field:
-              type: text
-              display: 'Sponsor name'
-              listable: true
+              type: toggle
+              display: 'Is Pro Shop'
           -
             handle: web_site
             field:
               type: link
               display: 'Web site'
-              listable: true
-          -
-            handle: driving_directions
-            field:
-              type: link
-              display: 'Driving directions'
               listable: true
           -
             handle: logo
@@ -36,6 +29,35 @@ tabs:
               type: assets
               display: Logo
               listable: true
+          -
+            handle: udisc_link
+            field:
+              type: link
+              display: 'UDisc Link'
+          -
+            handle: driving_directions
+            field:
+              type: link
+              display: 'Driving directions'
+              listable: true
+          -
+            handle: north_of_msdgc
+            field:
+              type: toggle
+              display: north_of_msdgc
+          -
+            handle: city_state
+            field:
+              type: text
+              display: city_state
+          -
+            handle: nearby
+            field:
+              automatic_links: true
+              escape_markup: true
+              heading_anchors: true
+              type: markdown
+              display: nearby
   sidebar:
     display: Sidebar
     sections:
@@ -47,4 +69,13 @@ tabs:
               type: slug
               localizable: true
               validate: 'max:200'
+          -
+            handle: parent
+            field:
+              type: entries
+              collections:
+                - sponsors
+              max_items: 1
+              listable: false
+              localizable: true
 title: Sponsor
