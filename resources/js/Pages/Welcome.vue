@@ -106,7 +106,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                 <div class="relative w-full px-6 lg:max-w-7xl">
                     <main class="mt-6">
                         <div class="grid grid-cols-1 gap-6">
-                            <div class="grid grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 <!-- Monday Dubs Card - Full Width -->
                                 <div :class="cardStyle" class="bg-zinc-800 text-white col-span-1">
                                     <p class="uppercase font-bold text-6xl bangers">Monday Dubs!!</p>

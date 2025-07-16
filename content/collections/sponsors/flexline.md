@@ -1,13 +1,13 @@
 ---
 id: 4ef1d166-daf1-4172-9d9d-1d1e656b7ba4
 blueprint: sponsor
-title: Flexline
+title: 'Flexline Discs'
 sponsor_name: Flexline
 web_site: 'https://flexlinediscs.com/'
 logo:
-  - flex_square.png
+  - flexline.svg
 updated_by: 1
-updated_at: 1752615548
+updated_at: 1752681891
 north_of_msdgc: false
 is_pro_shop: true
 udisc_link: 'https://udisc.com/stores/flexlinediscs-pro-shop-o6yS'
