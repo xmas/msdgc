@@ -139,11 +139,13 @@ const formatPivotAttrs = (attrs) => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <!-- Success/Error Messages -->
-                <div v-if="$page.props.flash?.success" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+                <div v-if="$page.props.flash?.success"
+                    class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
                     <span class="block sm:inline">{{ $page.props.flash.success }}</span>
                 </div>
 
-                <div v-if="$page.props.flash?.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <div v-if="$page.props.flash?.error"
+                    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
                     <span class="block sm:inline">{{ $page.props.flash.error }}</span>
                 </div>
 
@@ -161,7 +163,8 @@ const formatPivotAttrs = (attrs) => {
                             <div>
                                 <dt class="text-sm font-medium text-gray-500">Event Group</dt>
                                 <dd class="mt-1">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <span
+                                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         {{ event.event_group }}
                                     </span>
                                 </dd>
@@ -181,9 +184,16 @@ const formatPivotAttrs = (attrs) => {
                         <!-- Event Attributes -->
                         <div v-if="formatAttrs(event.attrs)" class="mt-6">
                             <dt class="text-sm font-medium text-gray-500 mb-2">Event Attributes</dt>
-                            <dd class="mt-1">
-                                <pre class="bg-gray-50 p-4 rounded-md text-sm overflow-x-auto">{{ JSON.stringify(event.attrs, null, 2) }}</pre>
-                            </dd>
+                            <div v-if="event.attrs && Object.keys(event.attrs).length > 0" class="space-y-1">
+                                <div v-for="(value, key) in event.attrs" :key="key" class="flex items-center space-x-2">
+                                    <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">{{ key
+                                        }}</span>
+                                    <span class="text-xs text-gray-800">{{ value }}</span>
+                                </div>
+                            </div>
+
+
+
                         </div>
                     </div>
                 </div>
@@ -206,27 +216,23 @@ const formatPivotAttrs = (attrs) => {
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <InputLabel for="user_id" value="Select User" />
-                                        <SearchableSelect
-                                            v-model="addUserForm.user_id"
-                                            :options="userOptions"
-                                            placeholder="Choose a user..."
-                                            search-placeholder="Search users..."
-                                            :required="true"
-                                        />
+                                        <SearchableSelect v-model="addUserForm.user_id" :options="userOptions"
+                                            placeholder="Choose a user..." search-placeholder="Search users..."
+                                            :required="true" />
                                         <InputError :message="addUserForm.errors.user_id" class="mt-2" />
                                     </div>
 
                                     <div>
                                         <InputLabel for="attrs" value="Per-Event Attributes" />
-                                        <KeyValueEditor
-                                            v-model="addUserForm.attrs"
+                                        <KeyValueEditor v-model="addUserForm.attrs"
                                             placeholder="Add per-event attributes..."
                                             key-placeholder="Attribute name (e.g., role, notes)"
-                                            value-placeholder="Attribute value"
-                                        />
+                                            value-placeholder="Attribute value" />
                                         <InputError :message="addUserForm.errors.attrs" class="mt-2" />
                                         <p class="mt-2 text-sm text-gray-500">
-                                            Optional: Add custom attributes for this user's participation. Example: role = "speaker", notes = "Special requirements"
+                                            Optional: Add custom attributes for this user's participation. Example: role
+                                            =
+                                            "speaker", notes = "Special requirements"
                                         </p>
                                     </div>
                                 </div>
@@ -235,7 +241,8 @@ const formatPivotAttrs = (attrs) => {
                                     <SecondaryButton type="button" @click="showAddUserForm = false">
                                         Cancel
                                     </SecondaryButton>
-                                    <PrimaryButton :class="{ 'opacity-25': addUserForm.processing }" :disabled="addUserForm.processing">
+                                    <PrimaryButton :class="{ 'opacity-25': addUserForm.processing }"
+                                        :disabled="addUserForm.processing">
                                         Add User
                                     </PrimaryButton>
                                 </div>
@@ -254,19 +261,24 @@ const formatPivotAttrs = (attrs) => {
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Name
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Email
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Joined
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Per-Event Attributes
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        <th
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Actions
                                         </th>
                                     </tr>
@@ -290,33 +302,31 @@ const formatPivotAttrs = (attrs) => {
                                             <!-- Editing mode -->
                                             <div v-if="editingUsers.has(user.id)" class="min-w-0 flex-1">
                                                 <div class="max-w-md">
-                                                    <KeyValueEditor
-                                                        v-model="userAttrsForms[user.id].attrs"
+                                                    <KeyValueEditor v-model="userAttrsForms[user.id].attrs"
                                                         placeholder="Add per-event attributes..."
                                                         key-placeholder="Attribute name"
-                                                        value-placeholder="Attribute value"
-                                                    />
+                                                        value-placeholder="Attribute value" />
                                                 </div>
                                                 <div class="mt-2 flex space-x-2">
-                                                    <button
-                                                        @click="saveUserAttrs(user.id)"
-                                                        class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                    >
+                                                    <button @click="saveUserAttrs(user.id)"
+                                                        class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                         Save
                                                     </button>
-                                                    <button
-                                                        @click="cancelEditingUser(user.id)"
-                                                        class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                    >
+                                                    <button @click="cancelEditingUser(user.id)"
+                                                        class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                                         Cancel
                                                     </button>
                                                 </div>
                                             </div>
                                             <!-- Display mode -->
                                             <div v-else>
-                                                <div v-if="user.pivot.attrs && Object.keys(user.pivot.attrs).length > 0" class="space-y-1">
-                                                    <div v-for="(value, key) in user.pivot.attrs" :key="key" class="flex items-center space-x-2">
-                                                        <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">{{ key }}</span>
+                                                <div v-if="user.pivot.attrs && Object.keys(user.pivot.attrs).length > 0"
+                                                    class="space-y-1">
+                                                    <div v-for="(value, key) in user.pivot.attrs" :key="key"
+                                                        class="flex items-center space-x-2">
+                                                        <span
+                                                            class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">{{
+                                                            key }}</span>
                                                         <span class="text-xs text-gray-800">{{ value }}</span>
                                                     </div>
                                                 </div>
@@ -327,17 +337,13 @@ const formatPivotAttrs = (attrs) => {
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             <div class="flex space-x-2">
-                                                <button
-                                                    v-if="!editingUsers.has(user.id)"
+                                                <button v-if="!editingUsers.has(user.id)"
                                                     @click="startEditingUser(user)"
-                                                    class="text-indigo-600 hover:text-indigo-900 font-medium"
-                                                >
+                                                    class="text-indigo-600 hover:text-indigo-900 font-medium">
                                                     Edit
                                                 </button>
-                                                <button
-                                                    @click="removeUser(user.id)"
-                                                    class="text-red-600 hover:text-red-900 font-medium"
-                                                >
+                                                <button @click="removeUser(user.id)"
+                                                    class="text-red-600 hover:text-red-900 font-medium">
                                                     Remove
                                                 </button>
                                             </div>
