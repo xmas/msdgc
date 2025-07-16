@@ -65,6 +65,10 @@ const logout = () => {
                                         Send Messages
                                     </NavLink>
 
+                                    <NavLink :href="route('events.index')" :active="route().current('events.*')">
+                                        Events
+                                    </NavLink>
+
                                     <a class="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 dark:text-gray-100  hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700  hover:border-b-2 transition duration-150 ease-in-out " href="/cp">Control Panel</a>
 
                                 </template>
@@ -228,6 +232,9 @@ const logout = () => {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('messages.index')" :active="route().current('messages.*')">
                             Send Messages
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('events.index')" :active="route().current('events.*')">
+                            Events
                         </ResponsiveNavLink>
                     </div>
 

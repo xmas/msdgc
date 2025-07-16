@@ -13,6 +13,13 @@ Route::get('/user', function (Request $request) {
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('members', MemberController::class, ['parameters' => ['members' => 'member']]);
     Route::post('/members/bulk-import', [MemberController::class, 'bulkImport']);
+
+    // Event-User relationship API routes
+    Route::post('/events/{event}/users', [App\Http\Controllers\EventUserController::class, 'attach']);
+    Route::delete('/events/{event}/users/{user}', [App\Http\Controllers\EventUserController::class, 'detach']);
+    Route::put('/events/{event}/users/{user}/attributes', [App\Http\Controllers\EventUserController::class, 'updateAttributes']);
+    Route::get('/events/{event}/users', [App\Http\Controllers\EventUserController::class, 'getUsers']);
+    Route::get('/users/{user}/events', [App\Http\Controllers\EventUserController::class, 'getUserEvents']);
 });
 
 // CMS Collections API routes

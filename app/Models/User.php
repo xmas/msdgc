@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -240,5 +241,18 @@ class User extends Authenticatable
     public function canLoginViaSms(): bool
     {
         return !is_null($this->sms);
+    }
+
+    /**
+     * The events that belong to the user.
+     */
+    public function events(): BelongsToMany
+    {
+        return $this->belongsToMany(Event::class, 'event_user')
+                    ->withPivot('attrs')
+                    ->withTimestamps()
+                    ->withCasts([
+                        'attrs' => 'array',
+                    ]);
     }
 }

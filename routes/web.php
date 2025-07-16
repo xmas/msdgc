@@ -50,6 +50,11 @@ Route::middleware([
     // Messages routes
     Route::get('/messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/send', [App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
+
+    // Events management routes (admin only)
+    Route::resource('events', App\Http\Controllers\EventController::class);
+    Route::post('/events/{event}/users', [App\Http\Controllers\EventController::class, 'addUser'])->name('events.users.add');
+    Route::delete('/events/{event}/users/{user}', [App\Http\Controllers\EventController::class, 'removeUser'])->name('events.users.remove');
 });
 
 // Passwordless login routes
