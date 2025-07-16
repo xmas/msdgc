@@ -17,17 +17,30 @@
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Your Name" />
+                <InputLabel for="first_name" value="First Name" />
                 <TextInput
-                    id="name"
-                    v-model="form.name"
+                    id="first_name"
+                    v-model="form.first_name"
                     type="text"
                     class="mt-1 block w-full"
-                    placeholder="Enter your full name"
+                    placeholder="Enter your first name"
                     required
                     autofocus
                 />
-                <InputError :message="form.errors.name" class="mt-2" />
+                <InputError :message="form.errors.first_name" class="mt-2" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="last_name" value="Last Name" />
+                <TextInput
+                    id="last_name"
+                    v-model="form.last_name"
+                    type="text"
+                    class="mt-1 block w-full"
+                    placeholder="Enter your last name"
+                    required
+                />
+                <InputError :message="form.errors.last_name" class="mt-2" />
             </div>
 
             <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-md">
@@ -74,7 +87,8 @@ const props = defineProps({
 })
 
 const form = useForm({
-    name: '',
+    first_name: '',
+    last_name: '',
 })
 
 const submit = () => {

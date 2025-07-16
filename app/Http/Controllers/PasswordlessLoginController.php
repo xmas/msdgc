@@ -141,7 +141,8 @@ class PasswordlessLoginController extends Controller
     public function completeName(Request $request, $token)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255'
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255'
         ]);
 
         if ($validator->fails()) {
@@ -164,7 +165,7 @@ class PasswordlessLoginController extends Controller
         if ($loginToken->type === 'email') {
             $user = User::createPasswordlessUser($request->first_name, $request->last_name, $loginToken->identifier, null);
         } else {
-            $user = User::createPasswordlessUser($request->first_name, $request->last_name, $loginToken->identifier);
+            $user = User::createPasswordlessUser($request->first_name, $request->last_name, null, $loginToken->identifier);
         }
 
         // Log the user in

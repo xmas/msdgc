@@ -17,7 +17,7 @@ class MessageController extends Controller
      */
     public function index()
     {
-        $users = User::select('id', 'name', 'email', 'sms', 'provider', 'sms_opt_in', 'email_opt_in', 'tags')
+        $users = User::select('id', 'first_name', 'last_name', 'email', 'sms', 'provider', 'sms_opt_in', 'email_opt_in', 'tags')
             ->get();
 
         $allTags = User::whereNotNull('tags')

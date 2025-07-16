@@ -31,7 +31,8 @@ class MemberController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'sms' => 'nullable|string|max:20',
             'provider' => 'nullable|string|max:50',
@@ -74,7 +75,8 @@ class MemberController extends Controller
     public function update(Request $request, User $member): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore($member->id)],
             'sms' => 'nullable|string|max:20',
             'provider' => 'nullable|string|max:50',
@@ -112,7 +114,8 @@ class MemberController extends Controller
     {
         $validated = $request->validate([
             'members' => 'required|array',
-            'members.*.name' => 'required|string|max:255',
+            'members.*.first_name' => 'required|string|max:255',
+            'members.*.last_name' => 'required|string|max:255',
             'members.*.email' => 'required|email|distinct',
             'members.*.sms' => 'nullable|string|max:20',
             'members.*.provider' => 'nullable|string|max:50',

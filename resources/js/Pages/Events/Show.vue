@@ -43,7 +43,7 @@ const userAttrsForms = ref({});
 const userOptions = computed(() => {
     return props.availableUsers.map(user => ({
         value: user.id,
-        label: `${user.name} (${user.email})`
+        label: `${user.first_name} ${user.last_name} (${user.email})`
     }));
 });
 
@@ -54,14 +54,15 @@ const filteredAndSortedUsers = computed(() => {
     // Apply search filter
     if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
-        users = users.filter(user =>
-            user.name.toLowerCase().includes(query) ||
-            user.email.toLowerCase().includes(query) ||
-            (user.pivot.attrs && Object.keys(user.pivot.attrs).some(key =>
-                key.toLowerCase().includes(query) ||
-                String(user.pivot.attrs[key]).toLowerCase().includes(query)
-            ))
-        );
+        users = users.filter(user => {
+            const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
+            return fullName.includes(query) ||
+                user.email.toLowerCase().includes(query) ||
+                (user.pivot.attrs && Object.keys(user.pivot.attrs).some(key =>
+                    key.toLowerCase().includes(query) ||
+                    String(user.pivot.attrs[key]).toLowerCase().includes(query)
+                ));
+        });
     }
 
     // Apply sorting
@@ -70,8 +71,8 @@ const filteredAndSortedUsers = computed(() => {
 
         switch (sortBy.value) {
             case 'name':
-                aValue = a.name.toLowerCase();
-                bValue = b.name.toLowerCase();
+                aValue = `${a.first_name} ${a.last_name}`.toLowerCase();
+                bValue = `${b.first_name} ${b.last_name}`.toLowerCase();
                 break;
             case 'email':
                 aValue = a.email.toLowerCase();
@@ -82,8 +83,8 @@ const filteredAndSortedUsers = computed(() => {
                 bValue = new Date(b.pivot.created_at);
                 break;
             default:
-                aValue = a.name.toLowerCase();
-                bValue = b.name.toLowerCase();
+                aValue = `${a.first_name} ${a.last_name}`.toLowerCase();
+                bValue = `${b.first_name} ${b.last_name}`.toLowerCase();
         }
 
         if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1;
@@ -217,7 +218,7 @@ const downloadParticipantsCSV = () => {
         const row = [];
 
         // Basic user info
-        row.push(`"${user.name}"`);
+        row.push(`"${user.first_name} ${user.last_name}"`);
         row.push(`"${user.email}"`);
         row.push(`"${formatDate(user.pivot.created_at)}"`);
 
@@ -510,7 +511,7 @@ const downloadParticipantsCSV = () => {
                                     <tr v-for="user in filteredAndSortedUsers" :key="user.id" class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">
-                                                {{ user.name }}
+                                                {{ user.first_name }} {{ user.last_name }}
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap">

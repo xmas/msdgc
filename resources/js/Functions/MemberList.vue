@@ -113,13 +113,11 @@
               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
             />
           </div>
-          <div class="col-span-2">Name</div>
-          <div class="col-span-2">Email</div>
-          <div class="col-span-1">Phone</div>
-          <div class="col-span-1">Tags</div>
-          <div class="col-span-1">Provider</div>
-          <div class="col-span-2">Paid Via</div>
-          <div class="col-span-1">How Heard</div>
+          <div class="col-span-2">First Name</div>
+          <div class="col-span-2">Last Name</div>
+          <div class="col-span-2">Phone</div>
+          <div class="col-span-2">Provider</div>
+          <div class="col-span-2">Events</div>
           <div class="col-span-1">Actions</div>
         </div>
       </div>
@@ -145,32 +143,32 @@
                 />
               </div>
 
-              <!-- Name -->
+              <!-- First Name -->
               <div class="col-span-2">
                 <input
-                  v-model="item.name"
+                  v-model="item.first_name"
                   @input="markAsChanged(item)"
                   type="text"
                   class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Full Name"
+                  placeholder="First Name"
                 />
                 <div v-if="item.isNew" class="text-xs text-green-600 dark:text-green-400 mt-1">New</div>
                 <div v-else-if="item.hasChanges" class="text-xs text-orange-600 dark:text-orange-400 mt-1">Modified</div>
               </div>
 
-              <!-- Email -->
+              <!-- Last Name -->
               <div class="col-span-2">
                 <input
-                  v-model="item.email"
+                  v-model="item.last_name"
                   @input="markAsChanged(item)"
-                  type="email"
+                  type="text"
                   class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="email@example.com"
+                  placeholder="Last Name"
                 />
               </div>
 
               <!-- Phone -->
-              <div class="col-span-1">
+              <div class="col-span-2">
                 <input
                   v-model="item.sms"
                   @input="markAsChanged(item)"
@@ -180,20 +178,8 @@
                 />
               </div>
 
-              <!-- Tags -->
-              <div class="col-span-1">
-                <input
-                  v-model="item.tags"
-                  @input="markAsChanged(item)"
-                  type="text"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Tags"
-                  :title="item.tags"
-                />
-              </div>
-
               <!-- Provider -->
-              <div class="col-span-1">
+              <div class="col-span-2">
                 <select
                   v-model="item.provider"
                   @change="markAsChanged(item)"
@@ -208,16 +194,14 @@
                 </select>
               </div>
 
-              <!-- How They Heard -->
-              <div class="col-span-1">
-                <input
-                  v-model="item.how_did_you_hear"
-                  @input="markAsChanged(item)"
-                  type="text"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="How heard"
-                  :title="item.how_did_you_hear"
-                />
+              <!-- Events -->
+              <div class="col-span-2">
+                <button
+                  @click="openMemberEventsModal(item)"
+                  class="w-full px-2 py-1 text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-800 dark:hover:bg-blue-700 text-blue-800 dark:text-blue-200 rounded border border-blue-300 dark:border-blue-600 transition-colors duration-200"
+                >
+                  View Events
+                </button>
               </div>
 
               <!-- Actions -->
@@ -249,7 +233,7 @@
     </div>
 
     <!-- CSV Upload Modal -->
-    <div v-if="showCsvModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div v-if="showCsvModal" class="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">CSV Upload Preview</h3>
         <div class="mb-4">
@@ -270,7 +254,8 @@
             <table class="min-w-full text-xs">
               <thead class="bg-gray-100 dark:bg-gray-600">
                 <tr>
-                  <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">Name</th>
+                  <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">First Name</th>
+                  <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">Last Name</th>
                   <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">Email</th>
                   <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">Phone</th>
                   <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">Provider</th>
@@ -280,7 +265,8 @@
               </thead>
               <tbody>
                 <tr v-for="(row, index) in csvData.slice(0, 5)" :key="index" class="border-t border-gray-200 dark:border-gray-600">
-                  <td class="px-3 py-2 text-gray-900 dark:text-gray-100">{{ row.name }}</td>
+                  <td class="px-3 py-2 text-gray-900 dark:text-gray-100">{{ row.first_name }}</td>
+                  <td class="px-3 py-2 text-gray-900 dark:text-gray-100">{{ row.last_name }}</td>
                   <td class="px-3 py-2 text-gray-900 dark:text-gray-100">{{ row.email }}</td>
                   <td class="px-3 py-2 text-gray-900 dark:text-gray-100">{{ row.sms }}</td>
                   <td class="px-3 py-2 text-gray-900 dark:text-gray-100">{{ row.provider }}</td>
@@ -313,7 +299,7 @@
     </div>
 
     <!-- Merge Members Modal -->
-    <div v-if="showMergeModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div v-if="showMergeModal" class="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Merge Members</h3>
         <div class="mb-4">
@@ -331,7 +317,8 @@
             <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200">Preview of Merged Member</h4>
           </div>
           <div class="p-4 space-y-2 text-sm">
-            <div><strong>Name:</strong> {{ previewMergedMember.name || '(empty)' }}</div>
+            <div><strong>First Name:</strong> {{ previewMergedMember.first_name || '(empty)' }}</div>
+            <div><strong>Last Name:</strong> {{ previewMergedMember.last_name || '(empty)' }}</div>
             <div><strong>Email:</strong> {{ previewMergedMember.email || '(empty)' }}</div>
             <div><strong>Phone:</strong> {{ previewMergedMember.sms || '(empty)' }}</div>
             <div><strong>Provider:</strong> {{ previewMergedMember.provider || '(empty)' }}</div>
@@ -357,12 +344,12 @@
                   <th class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">Field</th>
                   <th v-for="member in selectedMembersList" :key="member.id" class="px-3 py-2 text-left font-medium text-gray-700 dark:text-gray-300">
                     ID: {{ member.id }}<br>
-                    <span class="text-xs font-normal">{{ member.name || 'No Name' }}</span>
+                    <span class="text-xs font-normal">{{ member.first_name }} {{ member.last_name }}</span>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="field in ['name', 'email', 'sms', 'provider', 'tags', 'paid_via', 'how_did_you_hear']" :key="field" class="border-t border-gray-200 dark:border-gray-600">
+                <tr v-for="field in ['first_name', 'last_name', 'email', 'sms', 'provider', 'tags', 'paid_via', 'how_did_you_hear']" :key="field" class="border-t border-gray-200 dark:border-gray-600">
                   <td class="px-3 py-2 font-medium text-gray-900 dark:text-gray-100 capitalize">{{ field.replace('_', ' ') }}</td>
                   <td v-if="field === 'tags'" colspan="100" class="px-3 py-2 text-center text-sm text-gray-600 dark:text-gray-400 italic">
                     All tags from selected members will be combined automatically
@@ -405,7 +392,7 @@
     </div>
 
     <!-- Event Selection Modal -->
-    <div v-if="showEventModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div v-if="showEventModal" class="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Add Members to Event</h3>
         <div class="mb-4">
@@ -455,7 +442,7 @@
             <div v-for="member in selectedMembersList" :key="member.id" class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0">
               <div class="flex justify-between items-center">
                 <div>
-                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ member.name }}</div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ member.first_name }} {{ member.last_name }}</div>
                   <div class="text-xs text-gray-500 dark:text-gray-400">{{ member.email }}</div>
                 </div>
                 <div class="text-xs text-gray-500 dark:text-gray-400">ID: {{ member.id }}</div>
@@ -482,8 +469,89 @@
       </div>
     </div>
 
+    <!-- Member Events Modal -->
+    <div v-if="showMemberEventsModal" class="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-4xl max-h-screen overflow-y-auto">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">
+          Events for {{ selectedMemberForEvents?.first_name }} {{ selectedMemberForEvents?.last_name }}
+        </h3>
+
+        <!-- Loading state -->
+        <div v-if="loadingMemberEvents" class="flex items-center justify-center py-8">
+          <svg class="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="ml-2 text-gray-600 dark:text-gray-400">Loading events...</span>
+        </div>
+
+        <!-- Events list -->
+        <div v-else-if="memberEvents.length > 0" class="space-y-4">
+          <div v-for="event in memberEvents" :key="event.id" class="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <h4 class="text-lg font-medium text-gray-900 dark:text-white">{{ event.name }}</h4>
+                <p class="text-sm text-gray-600 dark:text-gray-400">{{ event.event_group }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ new Date(event.start_date).toLocaleDateString() }}
+                </p>
+                <p v-if="event.end_date" class="text-sm text-gray-500 dark:text-gray-400">
+                  to {{ new Date(event.end_date).toLocaleDateString() }}
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p class="text-gray-600 dark:text-gray-400">Location:</p>
+                <p class="text-gray-900 dark:text-white">{{ event.location || 'Not specified' }}</p>
+              </div>
+              <div>
+                <p class="text-gray-600 dark:text-gray-400">Capacity:</p>
+                <p class="text-gray-900 dark:text-white">{{ event.capacity || 'Unlimited' }}</p>
+              </div>
+            </div>
+
+            <!-- Event attributes for this user -->
+            <div v-if="event.pivot && event.pivot.attrs" class="mt-3">
+              <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Event Attributes:</p>
+              <div class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <pre class="bg-gray-50 dark:bg-gray-700 p-2 rounded text-xs">{{ JSON.stringify(JSON.parse(event.pivot.attrs), null, 2) }}</pre>
+              </div>
+            </div>
+
+            <div class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+              Added to event: {{ new Date(event.pivot.created_at).toLocaleDateString() }}
+            </div>
+          </div>
+        </div>
+
+        <!-- No events -->
+        <div v-else class="text-center py-8">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h6a2 2 0 012 2v4m-6 0v1h6V7M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-2"></path>
+          </svg>
+          <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {{ selectedMemberForEvents?.first_name }} {{ selectedMemberForEvents?.last_name }} is not registered for any events.
+          </p>
+        </div>
+
+        <!-- Close button -->
+        <div class="flex justify-end mt-6">
+          <button
+            @click="closeMemberEventsModal"
+            class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-md transition-colors duration-200"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading Overlay -->
-    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
         <div class="flex items-center">
           <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -550,6 +618,10 @@ const showEventModal = ref(false)
 const events = ref([])
 const selectedEventId = ref('')
 const eventAttributes = ref('')
+const showMemberEventsModal = ref(false)
+const selectedMemberForEvents = ref(null)
+const memberEvents = ref([])
+const loadingMemberEvents = ref(false)
 
 // Computed properties
 const filteredMembers = computed(() => {
@@ -557,8 +629,10 @@ const filteredMembers = computed(() => {
 
   const query = searchQuery.value.toLowerCase()
   return members.value.filter(member =>
-    member.name?.toLowerCase().includes(query) ||
-    member.email?.toLowerCase().includes(query)
+    member.first_name?.toLowerCase().includes(query) ||
+    member.last_name?.toLowerCase().includes(query) ||
+    member.email?.toLowerCase().includes(query) ||
+    member.sms?.toLowerCase().includes(query)
   )
 })
 
@@ -679,7 +753,8 @@ const markAsChanged = (member) => {
 const addNewMember = () => {
   const newMember = {
     id: nextId.value++,
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     sms: '',
     provider: 'manual',
@@ -702,7 +777,8 @@ const saveMember = async (member) => {
 
   try {
     const memberData = {
-      name: member.name,
+      first_name: member.first_name,
+      last_name: member.last_name,
       email: member.email,
       sms: member.sms,
       provider: member.provider,
@@ -880,7 +956,8 @@ const handleFileUpload = (event) => {
         tags = [...new Set(tags)].filter(tag => tag && tag.trim() !== '')
 
         return {
-          name: fullName,
+          first_name: firstName,
+          last_name: lastName,
           email: row['Email Address'] || row.email || row.Email || '',
           sms: phone,
           provider: provider,
@@ -977,7 +1054,8 @@ const openMergeModal = () => {
   const firstMember = sortedMembers[0]
 
   mergeFields.value = {
-    name: firstMember.id,
+    first_name: firstMember.id,
+    last_name: firstMember.id,
     email: firstMember.id,
     sms: firstMember.id,
     provider: firstMember.id,
@@ -1137,7 +1215,7 @@ const confirmAddToEvent = async () => {
           duplicateCount++
         } else {
           errorCount++
-          console.error(`Error adding member ${member.name} to event:`, error)
+          console.error(`Error adding member ${member.first_name} ${member.last_name} to event:`, error)
         }
       }
     })
@@ -1171,6 +1249,31 @@ const cancelAddToEvent = () => {
   showEventModal.value = false
   selectedEventId.value = ''
   eventAttributes.value = ''
+}
+
+// Member Events Modal Methods
+const openMemberEventsModal = async (member) => {
+  selectedMemberForEvents.value = member
+  showMemberEventsModal.value = true
+  loadingMemberEvents.value = true
+  memberEvents.value = []
+
+  try {
+    const response = await axios.get(`/api/members/${member.id}/events`)
+    memberEvents.value = response.data
+  } catch (error) {
+    console.error('Error loading member events:', error)
+    showNotification('Error loading member events: ' + (error.response?.data?.message || error.message), 'error')
+  } finally {
+    loadingMemberEvents.value = false
+  }
+}
+
+const closeMemberEventsModal = () => {
+  showMemberEventsModal.value = false
+  selectedMemberForEvents.value = null
+  memberEvents.value = []
+  loadingMemberEvents.value = false
 }
 
 // Simple notification system

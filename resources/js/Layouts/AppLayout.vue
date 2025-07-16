@@ -243,12 +243,12 @@ const logout = () => {
                         <div class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 me-3">
                                 <img class="size-10 rounded-full object-cover"
-                                    :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                                    :src="$page.props.auth.user.profile_photo_url" :alt="`${$page.props.auth.user.first_name} ${$page.props.auth.user.last_name}`">
                             </div>
 
                             <div>
                                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">
-                                    {{ $page.props.auth.user.name }}
+                                    {{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}
                                 </div>
                                 <div class="font-medium text-sm text-gray-500">
                                     {{ $page.props.auth.user.email }}

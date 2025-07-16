@@ -40,10 +40,10 @@ const updateTeamName = () => {
                 <InputLabel value="Team Owner" />
 
                 <div class="flex items-center mt-2">
-                    <img class="size-12 rounded-full object-cover" :src="team.owner.profile_photo_url" :alt="team.owner.name">
+                    <img class="size-12 rounded-full object-cover" :src="team.owner.profile_photo_url" :alt="`${team.owner.first_name} ${team.owner.last_name}`">
 
                     <div class="ms-4 leading-tight">
-                        <div class="text-gray-900 dark:text-white">{{ team.owner.name }}</div>
+                        <div class="text-gray-900 dark:text-white">{{ team.owner.first_name }} {{ team.owner.last_name }}</div>
                         <div class="text-gray-700 dark:text-gray-300 text-sm">
                             {{ team.owner.email }}
                         </div>

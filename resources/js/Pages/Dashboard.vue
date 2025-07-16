@@ -18,7 +18,7 @@ defineProps({
     <AppLayout title="Dashboard">
         <template #header>
             <h2 class="font-semibold text-4xl text-msdgc-blue dark:text-gray-200 leading-tight bangers">
-                <span class="text-blue-400">Welcome back,</span> {{ $attrs.auth.user.name }}
+                <span class="text-blue-400">Welcome back,</span> {{ $attrs.auth.user.first_name }} {{ $attrs.auth.user.last_name }}
             </h2>
         </template>
 

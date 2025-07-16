@@ -33,10 +33,10 @@ const createTeam = () => {
                 <InputLabel value="Team Owner" />
 
                 <div class="flex items-center mt-2">
-                    <img class="object-cover size-12 rounded-full" :src="$page.props.auth.user.profile_photo_url" :alt="$page.props.auth.user.name">
+                    <img class="object-cover size-12 rounded-full" :src="$page.props.auth.user.profile_photo_url" :alt="`${$page.props.auth.user.first_name} ${$page.props.auth.user.last_name}`">
 
                     <div class="ms-4 leading-tight">
-                        <div class="text-gray-900 dark:text-white">{{ $page.props.auth.user.name }}</div>
+                        <div class="text-gray-900 dark:text-white">{{ $page.props.auth.user.first_name }} {{ $page.props.auth.user.last_name }}</div>
                         <div class="text-sm text-gray-700 dark:text-gray-300">
                             {{ $page.props.auth.user.email }}
                         </div>

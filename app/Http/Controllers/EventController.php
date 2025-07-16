@@ -16,7 +16,7 @@ class EventController extends Controller
     public function index()
     {
         $events = Event::with(['users' => function ($query) {
-            $query->select(['users.id', 'users.name', 'users.email']);
+            $query->select(['users.id', 'users.first_name', 'users.last_name', 'users.email']);
         }])->orderBy('created_at', 'desc')->paginate(15);
 
         return Inertia::render('Events/Index', [
@@ -74,7 +74,7 @@ class EventController extends Controller
     public function show(Event $event)
     {
         $event->load(['users' => function ($query) {
-            $query->select(['users.id', 'users.name', 'users.email'])
+            $query->select(['users.id', 'users.first_name', 'users.last_name', 'users.email'])
                   ->withPivot('attrs', 'created_at');
         }]);
 
