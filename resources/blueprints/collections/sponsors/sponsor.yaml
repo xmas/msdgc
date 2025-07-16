@@ -58,6 +58,14 @@ tabs:
               heading_anchors: true
               type: markdown
               display: nearby
+          -
+            handle: logo_background
+            field:
+              swatches:
+                - '#000000'
+                - '#6e5c4a'
+              type: color
+              display: logo_background
   sidebar:
     display: Sidebar
     sections:
