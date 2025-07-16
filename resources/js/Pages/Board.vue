@@ -8,8 +8,14 @@ const loading = ref(true);
 const error = ref(null);
 const collapsedYears = ref(new Set());
 
+// Board members state
+const boardMembers = ref([]);
+const membersLoading = ref(true);
+const membersError = ref(null);
+
 onMounted(async () => {
     try {
+        // Fetch board minutes
         const response = await fetch('/api/collections/board_minutes');
         if (response.ok) {
             const data = await response.json();
@@ -37,10 +43,27 @@ onMounted(async () => {
         } else {
             error.value = 'Failed to fetch board minutes';
         }
+
+        // Fetch board members
+        const membersResponse = await fetch('/api/collections/board_member');
+        if (membersResponse.ok) {
+            const membersData = await membersResponse.json();
+            // Sort by order field if available, otherwise by name
+            boardMembers.value = (membersData.items || []).sort((a, b) => {
+                if (a.order && b.order) {
+                    return a.order - b.order;
+                }
+                return (a.name || '').localeCompare(b.name || '');
+            });
+        } else {
+            membersError.value = 'Failed to fetch board members';
+        }
     } catch (err) {
         error.value = 'Error fetching board minutes: ' + err.message;
+        membersError.value = 'Error fetching board members: ' + err.message;
     } finally {
         loading.value = false;
+        membersLoading.value = false;
     }
 });
 
@@ -142,6 +165,65 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                 </div>
                             </div>
 
+                            <!-- Board Members Section -->
+                            <div :class="cardStyle" class="bg-white">
+                                <div class="box-page w-full">
+                                    <div class="card-header">
+                                        <span class="card-header-icon">
+                                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11V7a5 5 0 0110 0v4m-5 0v6m0 0h4a2 2 0 002-2v-4a2 2 0 00-2-2h-4m0 6H7a2 2 0 01-2-2v-4a2 2 0 012-2h4" />
+                                            </svg>
+                                        </span>
+                                        <h1 class="card-header-text">Current Board Members</h1>
+                                    </div>
+
+                                    <div v-if="membersLoading" class="flex justify-center py-8">
+                                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+                                    </div>
+
+                                    <div v-else-if="membersError" class="text-red-500 text-center py-8">
+                                        {{ membersError }}
+                                    </div>
+
+                                    <div v-else-if="boardMembers.length === 0" class="text-gray-500 text-center py-8">
+                                        No board members information available yet.
+                                    </div>
+
+                                    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-xl">
+                                        <div
+                                            v-for="member in boardMembers"
+                                            :key="member.id"
+                                            class="p-4 hover:bg-gray-50 transition-colors"
+                                        >
+                                            <div class="flex items-start space-x-4">
+                                                <!-- Member Information -->
+                                                <div class="flex-1">
+                                                    <h3 class="text-md font-semibold text-gray-800">
+                                                        {{ member.title }}
+                                                    </h3>
+
+                                                    <div v-if="member.club_title" class="text-gray-600 mb-2">
+                                                        {{ member.club_title }}
+                                                    </div>
+
+                                                    <div v-if="member.roles">
+                                                        <div class="flex flex-wrap gap-2">
+                                                            <span
+                                                                v-for="role in member.roles"
+                                                                :key="role"
+                                                                class="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-semibold"
+                                                            >
+                                                                {{ role }}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- Board Minutes Section -->
                             <div :class="cardStyle" class="bg-white">
                                 <div class="box-page w-full">
@@ -212,7 +294,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                                                 <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-3">
                                                                     <div v-if="minute.date_of_meeting" class="flex items-center">
                                                                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                                                         </svg>
                                                                         <span>{{ formatDate(minute.date_of_meeting) }}</span>
                                                                     </div>

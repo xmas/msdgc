@@ -8,7 +8,7 @@ tabs:
             handle: title
             field:
               type: text
-              required: true
+              required: false
               validate:
                 - required
           -
@@ -21,6 +21,11 @@ tabs:
             field:
               type: date
               display: 'Date of Next Meeting'
+          -
+            handle: attendees
+            field:
+              type: users
+              display: Attendees
           -
             handle: present
             field:

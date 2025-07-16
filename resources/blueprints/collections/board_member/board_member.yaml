@@ -1,0 +1,42 @@
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: title
+            field:
+              type: text
+              required: true
+              validate:
+                - required
+              display: Name
+          -
+            handle: club_title
+            field:
+              type: text
+              display: 'Club Title'
+          -
+            handle: roles
+            field:
+              options:
+                - Jackson
+                - TD
+                - Raffle
+                - Merchandise
+                - Outreach
+              type: taggable
+              display: Roles
+  sidebar:
+    display: Sidebar
+    sections:
+      -
+        fields:
+          -
+            handle: slug
+            field:
+              type: slug
+              localizable: true
+              validate: 'max:200'
+title: 'Board Member'
