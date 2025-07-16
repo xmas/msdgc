@@ -41,6 +41,7 @@ class User extends Authenticatable
         'paid_via',
         'tags',
         'is_super_admin',
+        'super',
         'comments',
         'topics',
         'region',
@@ -83,6 +84,7 @@ class User extends Authenticatable
             'email_opt_in' => 'boolean',
             'tags' => 'array',
             'is_super_admin' => 'boolean',
+            'super' => 'boolean',
         ];
     }
 
@@ -116,9 +118,9 @@ class User extends Authenticatable
      */
     public function makeSuperAdmin(): self
     {
-        $this->update(['is_super_admin' => true]);
+        // $this->update(['is_super_admin' => true]);
         $this->update(['super' => 1]);
-
+        $this->save();
         return $this;
     }
 
@@ -127,8 +129,9 @@ class User extends Authenticatable
      */
     public function removeSuperAdmin(): self
     {
-        $this->update(['is_super_admin' => false]);
-        $this->update(['super' => false]);
+        $this->super = true;
+        $this->is_super_admin = true;
+        $this->save();
 
         return $this;
     }
@@ -152,9 +155,10 @@ class User extends Authenticatable
         }
 
         // Switch current team to admin team
-        if ($adminTeam && $this->current_team_id !== $adminTeam->id) {
-            $this->switchTeam($adminTeam);
-        }
+        // if ($adminTeam && $this->current_team_id !== $adminTeam->id) {
+        // }
+        $this->switchTeam($adminTeam);
+
 
         return $this;
     }
@@ -255,11 +259,11 @@ class User extends Authenticatable
     public function events(): BelongsToMany
     {
         return $this->belongsToMany(Event::class, 'event_user')
-                    ->withPivot('attrs')
-                    ->withTimestamps()
-                    ->withCasts([
-                        'attrs' => 'array',
-                    ]);
+            ->withPivot('attrs')
+            ->withTimestamps()
+            ->withCasts([
+                'attrs' => 'array',
+            ]);
     }
 
     /**

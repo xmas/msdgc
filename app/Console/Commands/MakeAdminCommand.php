@@ -29,6 +29,8 @@ class MakeAdminCommand extends Command
         $email = $this->argument('email');
         $super = $this->option('super');
 
+
+
         $user = User::where('email', $email)->first();
 
         if (!$user) {
