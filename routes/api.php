@@ -14,6 +14,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('members', MemberController::class, ['parameters' => ['members' => 'member']]);
     Route::post('/members/bulk-import', [MemberController::class, 'bulkImport']);
 
+    // Event management API routes
+    Route::apiResource('events', App\Http\Controllers\Api\EventController::class);
+
     // Event-User relationship API routes
     Route::post('/events/{event}/users', [App\Http\Controllers\EventUserController::class, 'attach']);
     Route::delete('/events/{event}/users/{user}', [App\Http\Controllers\EventUserController::class, 'detach']);

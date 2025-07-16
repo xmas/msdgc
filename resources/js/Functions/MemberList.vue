@@ -69,6 +69,18 @@
           </svg>
           Merge ({{ selectedMembers.size }})
         </button>
+
+        <!-- Add to Event -->
+        <button
+          @click="openEventModal"
+          :disabled="selectedMembers.size === 0"
+          class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-md transition-colors duration-200"
+        >
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h6a2 2 0 012 2v4m-6 0v1h6V7M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-2"></path>
+          </svg>
+          Add to Event ({{ selectedMembers.size }})
+        </button>
       </div>
     </div>
 
@@ -403,6 +415,84 @@
       </div>
     </div>
 
+    <!-- Event Selection Modal -->
+    <div v-if="showEventModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-2xl max-h-screen overflow-y-auto">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Add Members to Event</h3>
+        <div class="mb-4">
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            Adding <span class="font-semibold text-purple-600">{{ selectedMembersList.length }}</span> selected members to an event
+          </p>
+        </div>
+
+        <!-- Event Selection -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Select Event
+          </label>
+          <SearchableSelect
+            v-model="selectedEventId"
+            :options="eventOptions"
+            placeholder="Choose an event..."
+            search-placeholder="Search events..."
+            display-key="label"
+            value-key="value"
+          />
+        </div>
+
+        <!-- Event Attributes (if event has user_attrs schema) -->
+        <div v-if="selectedEvent && selectedEvent.user_attrs" class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Event Attributes
+          </label>
+          <KeyValueEditor
+            v-model="eventAttributes"
+            :model-value="defaultEventAttributes"
+            placeholder="Add event attributes..."
+            key-placeholder="Attribute"
+            value-placeholder="Value"
+          />
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            Optional: Attributes that will be stored for each member in this event
+          </p>
+        </div>
+
+        <!-- Selected Members Preview -->
+        <div class="mb-4 border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+          <div class="bg-gray-50 dark:bg-gray-700 px-4 py-2">
+            <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300">Selected Members</h4>
+          </div>
+          <div class="max-h-40 overflow-y-auto">
+            <div v-for="member in selectedMembersList" :key="member.id" class="px-4 py-2 border-b border-gray-200 dark:border-gray-600 last:border-b-0">
+              <div class="flex justify-between items-center">
+                <div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ member.name }}</div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ member.email }}</div>
+                </div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">ID: {{ member.id }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button
+            @click="confirmAddToEvent"
+            :disabled="!selectedEventId"
+            class="flex-1 px-4 py-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-md transition-colors duration-200"
+          >
+            Add {{ selectedMembersList.length }} Members to Event
+          </button>
+          <button
+            @click="cancelAddToEvent"
+            class="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-md transition-colors duration-200"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Loading Overlay -->
     <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div class="bg-white dark:bg-gray-800 rounded-lg p-6">
@@ -438,10 +528,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { RecycleScroller } from 'vue3-virtual-scroller'
 import Papa from 'papaparse'
 import axios from 'axios'
+import SearchableSelect from '@/Components/SearchableSelect.vue'
+import KeyValueEditor from '@/Components/KeyValueEditor.vue'
 
 // Configure axios defaults
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -465,6 +557,10 @@ const nextId = ref(1)
 const selectedMembers = ref(new Set())
 const showMergeModal = ref(false)
 const mergeFields = ref({})
+const showEventModal = ref(false)
+const events = ref([])
+const selectedEventId = ref('')
+const eventAttributes = ref('')
 
 // Computed properties
 const filteredMembers = computed(() => {
@@ -487,6 +583,31 @@ const selectedMembersList = computed(() => {
 
 const canMerge = computed(() => {
   return selectedMembersList.value.length >= 2
+})
+
+const selectedEvent = computed(() => {
+  return events.value.find(event => event.id === selectedEventId.value)
+})
+
+const eventOptions = computed(() => {
+  return events.value.map(event => ({
+    value: event.id,
+    label: `${event.name} (${event.event_group})`
+  }))
+})
+
+const defaultEventAttributes = computed(() => {
+  if (!selectedEvent.value || !selectedEvent.value.user_attrs) {
+    return ''
+  }
+
+  // If user_attrs is already a JSON string, return it
+  if (typeof selectedEvent.value.user_attrs === 'string') {
+    return selectedEvent.value.user_attrs
+  }
+
+  // If user_attrs is an object, stringify it
+  return JSON.stringify(selectedEvent.value.user_attrs)
 })
 
 const previewMergedMember = computed(() => {
@@ -957,6 +1078,112 @@ const cancelMerge = () => {
   mergeFields.value = {}
 }
 
+// Event functionality methods
+const loadEvents = async () => {
+  try {
+    const response = await axios.get('/api/events')
+    events.value = response.data
+  } catch (error) {
+    console.error('Error loading events:', error)
+    showNotification('Error loading events: ' + (error.response?.data?.message || error.message), 'error')
+  }
+}
+
+const openEventModal = () => {
+  if (selectedMembersList.value.length === 0) {
+    showNotification('Please select at least one member to add to an event', 'warning')
+    return
+  }
+
+  loadEvents()
+  showEventModal.value = true
+}
+
+// Watch for event selection changes to update default attributes
+watch(selectedEventId, (newEventId) => {
+  if (newEventId && selectedEvent.value && selectedEvent.value.user_attrs) {
+    // Initialize the KeyValueEditor with the default attributes from the event
+    eventAttributes.value = defaultEventAttributes.value
+  } else {
+    // Clear attributes if no event selected or no user_attrs
+    eventAttributes.value = ''
+  }
+}, { immediate: false })
+
+const confirmAddToEvent = async () => {
+  if (!selectedEventId.value) {
+    showNotification('Please select an event', 'warning')
+    return
+  }
+
+  loading.value = true
+  loadingMessage.value = 'Adding members to event...'
+
+  try {
+    let parsedAttributes = null
+    if (eventAttributes.value && eventAttributes.value.trim() !== '') {
+      try {
+        // KeyValueEditor already outputs JSON strings, so parse directly
+        parsedAttributes = JSON.parse(eventAttributes.value)
+      } catch (error) {
+        showNotification('Invalid JSON format in event attributes', 'error')
+        loading.value = false
+        return
+      }
+    }
+
+    let successCount = 0
+    let duplicateCount = 0
+    let errorCount = 0
+
+    const promises = selectedMembersList.value.map(async (member) => {
+      try {
+        await axios.post(`/api/events/${selectedEventId.value}/users`, {
+          user_id: member.id,
+          attrs: parsedAttributes ? JSON.stringify(parsedAttributes) : null
+        })
+        successCount++
+      } catch (error) {
+        if (error.response?.status === 400 && error.response?.data?.error?.includes('already attached')) {
+          duplicateCount++
+        } else {
+          errorCount++
+          console.error(`Error adding member ${member.name} to event:`, error)
+        }
+      }
+    })
+
+    await Promise.all(promises)
+
+    let message = `Successfully added ${successCount} members to event`
+    if (duplicateCount > 0) {
+      message += `, ${duplicateCount} already in event`
+    }
+    if (errorCount > 0) {
+      message += `, ${errorCount} errors`
+    }
+
+    showNotification(message, errorCount > 0 ? 'warning' : 'success')
+
+    // Clear selection and close modal
+    selectedMembers.value.clear()
+    showEventModal.value = false
+    selectedEventId.value = ''
+    eventAttributes.value = ''
+  } catch (error) {
+    console.error('Error adding members to event:', error)
+    showNotification('Error adding members to event: ' + (error.response?.data?.message || error.message), 'error')
+  } finally {
+    loading.value = false
+  }
+}
+
+const cancelAddToEvent = () => {
+  showEventModal.value = false
+  selectedEventId.value = ''
+  eventAttributes.value = ''
+}
+
 // Simple notification system
 const notifications = ref([])
 
@@ -972,6 +1199,11 @@ const showNotification = (message, type = 'info') => {
 // Lifecycle
 onMounted(() => {
   loadMembers()
+})
+
+// Expose methods for parent component
+defineExpose({
+  openEventModal
 })
 </script>
 
