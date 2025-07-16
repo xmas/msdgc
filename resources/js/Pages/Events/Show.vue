@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
+import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
@@ -17,11 +18,15 @@ const props = defineProps({
 });
 
 const showAddUserForm = ref(false);
+const editingUsers = ref(new Set());
 
 const addUserForm = useForm({
     user_id: '',
     attrs: ''
 });
+
+// Store for user attribute forms
+const userAttrsForms = ref({});
 
 // Transform users for SearchableSelect component
 const userOptions = computed(() => {
@@ -50,6 +55,42 @@ const submitAddUser = () => {
             showAddUserForm.value = false;
         }
     });
+};
+
+const startEditingUser = (user) => {
+    editingUsers.value.add(user.id);
+    // Initialize form with current attrs
+    const currentAttrs = user.pivot.attrs || {};
+    userAttrsForms.value[user.id] = useForm({
+        attrs: Object.keys(currentAttrs).length > 0 ? JSON.stringify(currentAttrs) : ''
+    });
+};
+
+const cancelEditingUser = (userId) => {
+    editingUsers.value.delete(userId);
+    delete userAttrsForms.value[userId];
+};
+
+const saveUserAttrs = async (userId) => {
+    const form = userAttrsForms.value[userId];
+    if (!form) return;
+
+    try {
+        const response = await axios.put(`/api/events/${props.event.id}/users/${userId}/attributes`, {
+            attrs: form.attrs
+        });
+
+        // Refresh the page to get updated data
+        router.visit(route('events.show', props.event.id), {
+            preserveScroll: true
+        });
+
+        editingUsers.value.delete(userId);
+        delete userAttrsForms.value[userId];
+    } catch (error) {
+        console.error('Error updating user attributes:', error);
+        alert('Error updating user attributes. Please try again.');
+    }
 };
 
 const formatDate = (dateString) => {
@@ -246,20 +287,60 @@ const formatPivotAttrs = (attrs) => {
                                             {{ formatDate(user.pivot.created_at) }}
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-900">
-                                            <div v-if="user.pivot.attrs && Object.keys(user.pivot.attrs).length > 0">
-                                                <pre class="bg-gray-50 p-2 rounded text-xs overflow-x-auto max-w-xs">{{ formatPivotAttrs(user.pivot.attrs) }}</pre>
+                                            <!-- Editing mode -->
+                                            <div v-if="editingUsers.has(user.id)" class="min-w-0 flex-1">
+                                                <div class="max-w-md">
+                                                    <KeyValueEditor
+                                                        v-model="userAttrsForms[user.id].attrs"
+                                                        placeholder="Add per-event attributes..."
+                                                        key-placeholder="Attribute name"
+                                                        value-placeholder="Attribute value"
+                                                    />
+                                                </div>
+                                                <div class="mt-2 flex space-x-2">
+                                                    <button
+                                                        @click="saveUserAttrs(user.id)"
+                                                        class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                    <button
+                                                        @click="cancelEditingUser(user.id)"
+                                                        class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div v-else class="text-gray-500">
-                                                No attributes
+                                            <!-- Display mode -->
+                                            <div v-else>
+                                                <div v-if="user.pivot.attrs && Object.keys(user.pivot.attrs).length > 0" class="space-y-1">
+                                                    <div v-for="(value, key) in user.pivot.attrs" :key="key" class="flex items-center space-x-2">
+                                                        <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">{{ key }}</span>
+                                                        <span class="text-xs text-gray-800">{{ value }}</span>
+                                                    </div>
+                                                </div>
+                                                <div v-else class="text-gray-500">
+                                                    No attributes
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            <button
-                                                @click="removeUser(user.id)"
-                                                class="text-red-600 hover:text-red-900 font-medium"
-                                            >
-                                                Remove
-                                            </button>
+                                            <div class="flex space-x-2">
+                                                <button
+                                                    v-if="!editingUsers.has(user.id)"
+                                                    @click="startEditingUser(user)"
+                                                    class="text-indigo-600 hover:text-indigo-900 font-medium"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    @click="removeUser(user.id)"
+                                                    class="text-red-600 hover:text-red-900 font-medium"
+                                                >
+                                                    Remove
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>

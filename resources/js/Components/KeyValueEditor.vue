@@ -66,7 +66,7 @@ const emitUpdate = () => {
             result[pair.key.trim()] = pair.value;
         }
     });
-    
+
     isInternalUpdate.value = true;
     // Only emit JSON string if there are actual pairs, otherwise emit empty string
     const jsonString = Object.keys(result).length > 0 ? JSON.stringify(result) : '';
@@ -85,7 +85,7 @@ const initializePairs = () => {
         value: String(value),
         id: Math.random().toString(36).substr(2, 9)
     }));
-    
+
     // Add empty pair if none exist
     if (pairs.value.length === 0) {
         addPair();
