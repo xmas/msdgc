@@ -8,6 +8,7 @@ import InputError from '@/Components/InputError.vue';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import KeyValueEditor from '@/Components/KeyValueEditor.vue';
 import { router } from '@inertiajs/vue3';
 
 const form = useForm({
@@ -93,17 +94,16 @@ const eventGroups = [
                             </div>
 
                             <div class="col-span-6">
-                                <InputLabel for="attrs" value="Event Attributes (JSON)" />
-                                <textarea
-                                    id="attrs"
+                                <InputLabel for="attrs" value="Event Attributes" />
+                                <KeyValueEditor
                                     v-model="form.attrs"
-                                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    rows="6"
-                                    placeholder='{"location": "123 Main St", "capacity": 100, "description": "Event description", "tags": ["networking", "tech"]}'
+                                    placeholder="Add event attributes..."
+                                    key-placeholder="Attribute name (e.g., location, capacity)"
+                                    value-placeholder="Attribute value"
                                 />
                                 <InputError :message="form.errors.attrs" class="mt-2" />
                                 <p class="mt-2 text-sm text-gray-500">
-                                    Optional: Enter custom attributes as JSON. Example: {"location": "123 Main St", "capacity": 100}
+                                    Optional: Add custom attributes as key-value pairs. Example: location = "123 Main St", capacity = "100"
                                 </p>
                             </div>
                         </template>

@@ -40,15 +40,16 @@ class EventController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'event_group' => ['required', 'string', 'max:255'],
-            'attrs' => ['nullable', 'json'],
+            'attrs' => ['nullable', 'string'],
         ]);
 
         // Parse attrs JSON if provided
         if ($validated['attrs']) {
-            $validated['attrs'] = json_decode($validated['attrs'], true);
+            $decoded = json_decode($validated['attrs'], true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return back()->withErrors(['attrs' => 'Invalid JSON format.'])->withInput();
             }
+            $validated['attrs'] = $decoded;
         }
 
         Event::create($validated);
@@ -66,6 +67,14 @@ class EventController extends Controller
             $query->select(['users.id', 'users.name', 'users.email'])
                   ->withPivot('attrs', 'created_at');
         }]);
+
+        // Parse pivot attrs from JSON strings to objects
+        $event->users->transform(function ($user) {
+            if ($user->pivot->attrs) {
+                $user->pivot->attrs = json_decode($user->pivot->attrs, true);
+            }
+            return $user;
+        });
 
         // Get all users who are not already part of this event
         $availableUsers = \App\Models\User::select(['id', 'name', 'email'])
@@ -97,15 +106,16 @@ class EventController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'event_group' => ['required', 'string', 'max:255'],
-            'attrs' => ['nullable', 'json'],
+            'attrs' => ['nullable', 'string'],
         ]);
 
         // Parse attrs JSON if provided
         if ($validated['attrs']) {
-            $validated['attrs'] = json_decode($validated['attrs'], true);
+            $decoded = json_decode($validated['attrs'], true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return back()->withErrors(['attrs' => 'Invalid JSON format.'])->withInput();
             }
+            $validated['attrs'] = $decoded;
         }
 
         $event->update($validated);
@@ -132,7 +142,7 @@ class EventController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'attrs' => 'nullable|json'
+            'attrs' => 'nullable|string'
         ]);
 
         $userId = $request->user_id;
@@ -143,11 +153,12 @@ class EventController extends Controller
         }
 
         $attrs = null;
-        if ($request->attrs) {
-            $attrs = json_decode($request->attrs, true);
+        if ($request->attrs && $request->attrs !== '') {
+            $decoded = json_decode($request->attrs, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 return back()->withErrors(['attrs' => 'Invalid JSON format.']);
             }
+            $attrs = json_encode($decoded);
         }
 
         $event->users()->attach($userId, [

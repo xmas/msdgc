@@ -9,6 +9,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import InputError from '@/Components/InputError.vue';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import SearchableSelect from '@/Components/SearchableSelect.vue';
+import KeyValueEditor from '@/Components/KeyValueEditor.vue';
 
 const props = defineProps({
     event: Object,
@@ -175,15 +176,17 @@ const formatPivotAttrs = (attrs) => {
                                     </div>
 
                                     <div>
-                                        <InputLabel for="attrs" value="Per-Event Attributes (JSON)" />
-                                        <textarea
-                                            id="attrs"
+                                        <InputLabel for="attrs" value="Per-Event Attributes" />
+                                        <KeyValueEditor
                                             v-model="addUserForm.attrs"
-                                            class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                            rows="3"
-                                            placeholder='{"role": "participant", "notes": "Special requirements"}'
+                                            placeholder="Add per-event attributes..."
+                                            key-placeholder="Attribute name (e.g., role, notes)"
+                                            value-placeholder="Attribute value"
                                         />
                                         <InputError :message="addUserForm.errors.attrs" class="mt-2" />
+                                        <p class="mt-2 text-sm text-gray-500">
+                                            Optional: Add custom attributes for this user's participation. Example: role = "speaker", notes = "Special requirements"
+                                        </p>
                                     </div>
                                 </div>
 

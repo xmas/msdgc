@@ -16,7 +16,7 @@ class EventUserController extends Controller
     {
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'attrs' => 'nullable|array'
+            'attrs' => 'nullable|string'
         ]);
 
         $user = User::findOrFail($request->user_id);
@@ -26,8 +26,17 @@ class EventUserController extends Controller
             return response()->json(['error' => 'User is already attached to this event'], 400);
         }
 
+        $attrs = null;
+        if ($request->attrs) {
+            $decoded = json_decode($request->attrs, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['error' => 'Invalid JSON format'], 400);
+            }
+            $attrs = json_encode($decoded);
+        }
+
         $event->users()->attach($user->id, [
-            'attrs' => $request->attrs ?? null
+            'attrs' => $attrs
         ]);
 
         return response()->json(['message' => 'User attached to event successfully']);
@@ -53,15 +62,24 @@ class EventUserController extends Controller
     public function updateAttributes(Request $request, Event $event, User $user)
     {
         $request->validate([
-            'attrs' => 'nullable|array'
+            'attrs' => 'nullable|string'
         ]);
 
         if (!$event->users()->where('user_id', $user->id)->exists()) {
             return response()->json(['error' => 'User is not attached to this event'], 400);
         }
 
+        $attrs = null;
+        if ($request->attrs) {
+            $decoded = json_decode($request->attrs, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return response()->json(['error' => 'Invalid JSON format'], 400);
+            }
+            $attrs = json_encode($decoded);
+        }
+
         $event->users()->updateExistingPivot($user->id, [
-            'attrs' => $request->attrs ?? null
+            'attrs' => $attrs
         ]);
 
         return response()->json(['message' => 'User attributes updated successfully']);
@@ -74,6 +92,14 @@ class EventUserController extends Controller
     {
         $users = $event->users()->withPivot('attrs', 'created_at', 'updated_at')->get();
 
+        // Parse pivot attrs from JSON strings to objects
+        $users->transform(function ($user) {
+            if ($user->pivot->attrs) {
+                $user->pivot->attrs = json_decode($user->pivot->attrs, true);
+            }
+            return $user;
+        });
+
         return response()->json($users);
     }
 
@@ -83,6 +109,14 @@ class EventUserController extends Controller
     public function getUserEvents(User $user)
     {
         $events = $user->events()->withPivot('attrs', 'created_at', 'updated_at')->get();
+
+        // Parse pivot attrs from JSON strings to objects
+        $events->transform(function ($event) {
+            if ($event->pivot->attrs) {
+                $event->pivot->attrs = json_decode($event->pivot->attrs, true);
+            }
+            return $event;
+        });
 
         return response()->json($events);
     }

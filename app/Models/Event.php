@@ -40,9 +40,6 @@ class Event extends Model
     {
         return $this->belongsToMany(User::class, 'event_user')
                     ->withPivot('attrs')
-                    ->withTimestamps()
-                    ->withCasts([
-                        'attrs' => 'array',
-                    ]);
+                    ->withTimestamps();
     }
 }
