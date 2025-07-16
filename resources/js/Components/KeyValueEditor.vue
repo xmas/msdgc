@@ -134,7 +134,7 @@ const isEmpty = computed(() => {
                         v-model="pair.key"
                         type="text"
                         :placeholder="keyPlaceholder"
-                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm px-3 py-2"
                         @input="handleInput(index)"
                     />
                 </div>
@@ -143,7 +143,7 @@ const isEmpty = computed(() => {
                         v-model="pair.value"
                         type="text"
                         :placeholder="valuePlaceholder"
-                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm text-sm px-3 py-2"
                         @input="handleInput(index)"
                     />
                 </div>
