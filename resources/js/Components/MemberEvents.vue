@@ -24,41 +24,54 @@
             </div>
         </div>
 
-        <!-- Events list -->
+        <!-- Events list grouped by event_group -->
         <div v-else class="space-y-4">
-            <div v-for="event in events" :key="event.id"
-                class="bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 p-4 hover:shadow-md transition-shadow">
-                <div class="flex-1">
-                    <h4 class="text-lg font-medium text-gray-900 dark:text-white">
-                        {{ event.name }}
-                    </h4>
-
-                    <div class="mt-1 flex items-center text-sm text-gray-500 dark:text-gray-400">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                        {{ event.event_group }}
+            <div v-for="(groupEvents, groupName) in groupedEvents" :key="groupName" class="border border-gray-200 dark:border-gray-600 rounded-lg overflow-hidden">
+                <!-- Group header -->
+                <button @click="toggleGroup(groupName)"
+                    class="w-full flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                    <div class="flex items-center">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            {{ groupName || 'Ungrouped' }}
+                        </h3>
+                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            {{ groupEvents.length }}
+                        </span>
                     </div>
+                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 transform transition-transform"
+                         :class="{ 'rotate-180': expandedGroups[groupName] }"
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
 
-                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                        <span class="font-medium">Joined:</span>
-                        {{ formatDate(event.pivot.created_at) }}
-                    </div>
-                </div>
+                <!-- Group content -->
+                <div v-show="expandedGroups[groupName]" class="border-t border-gray-200 dark:border-gray-600">
+                    <div class="divide-y divide-gray-200 dark:divide-gray-600">
+                        <div v-for="event in groupEvents" :key="event.id"
+                            class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <div class="flex-1">
+                                <h4 class="text-lg font-medium text-gray-900 dark:text-white">
+                                    {{ event.name }}
+                                </h4>
 
+                                <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                                    <span class="font-medium">Joined:</span>
+                                    {{ formatDate(event.pivot.created_at) }}
+                                </div>
+                            </div>
 
-                <div v-if="event.pivot.attrs" class="mt-4 p-3 bg-gray-50 dark:bg-gray-600 rounded-md grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
-                    <div v-for="(value, key) in event.pivot.attrs" :key="key" class="col-span-1 justify-between text-sm pb-4">
-                        <div class="font-bold text-gray-600 dark:text-gray-400 uppercase text-sm pb-2">{{ key }}</div>
-                        <div v-if="value" class="rounded-sm bg-blue-500 text-white font-bold text-lg text-center mr-6 py-1">{{ value }}</div>
-                        <div v-else class="text-gray-400 italic">No value</div>
+                            <div v-if="event.pivot.attrs" class="mt-4 p-3 bg-gray-50 dark:bg-gray-600 rounded-md grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2">
+                                <div v-for="(value, key) in event.pivot.attrs" :key="key" class="col-span-1 justify-between text-sm pb-4">
+                                    <div class="font-bold text-gray-600 dark:text-gray-400 uppercase text-sm pb-2">{{ key }}</div>
+                                    <div v-if="value" class="rounded-sm bg-blue-500 text-white font-bold text-lg text-center mr-6 py-1">{{ value }}</div>
+                                    <div v-else class="text-gray-400 italic">No value</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
 
         <!-- Refresh button -->
@@ -78,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, computed } from 'vue';
 import axios from 'axios';
 
 // Props
@@ -94,6 +107,32 @@ const events = ref([]);
 const loading = ref(false);
 const error = ref(null);
 const showAttributes = reactive({});
+const expandedGroups = reactive({});
+
+// Computed properties
+const groupedEvents = computed(() => {
+    const groups = {};
+
+    events.value.forEach(event => {
+        const groupName = event.event_group || 'Ungrouped';
+        if (!groups[groupName]) {
+            groups[groupName] = [];
+        }
+        groups[groupName].push(event);
+    });
+
+    // Sort groups alphabetically, but put 'Ungrouped' last
+    const sortedGroups = {};
+    Object.keys(groups).sort((a, b) => {
+        if (a === 'Ungrouped') return 1;
+        if (b === 'Ungrouped') return -1;
+        return a.localeCompare(b);
+    }).forEach(key => {
+        sortedGroups[key] = groups[key];
+    });
+
+    return sortedGroups;
+});
 
 // Methods
 const fetchEvents = async () => {
@@ -105,12 +144,23 @@ const fetchEvents = async () => {
     try {
         const response = await axios.get(`/api/users/${props.userId}/events`);
         events.value = response.data;
+
+        // Auto-expand all groups on first load
+        Object.keys(groupedEvents.value).forEach(groupName => {
+            if (expandedGroups[groupName] === undefined) {
+                expandedGroups[groupName] = true;
+            }
+        });
     } catch (err) {
         error.value = err.response?.data?.message || 'Failed to fetch events';
         console.error('Error fetching user events:', err);
     } finally {
         loading.value = false;
     }
+};
+
+const toggleGroup = (groupName) => {
+    expandedGroups[groupName] = !expandedGroups[groupName];
 };
 
 const toggleAttributes = (eventId) => {
