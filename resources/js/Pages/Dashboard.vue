@@ -4,6 +4,7 @@ import Welcome from '@/Components/Welcome.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { Link } from '@inertiajs/vue3';
 import MemberList from '@/Functions/MemberList.vue';
+import MemberEvents from '@/Components/MemberEvents.vue';
 
 
 defineProps({
@@ -127,6 +128,26 @@ defineProps({
                                         </Link>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- My Events Card -->
+                            <div class="bg-white dark:bg-gray-700 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-8 w-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-2M8 7h8M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6M9 17H7M17 17h2"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="ml-5">
+                                        <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                            My Events
+                                        </h3>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">
+                                            Events you're participating in
+                                        </p>
+                                    </div>
+                                </div>
+                                <MemberEvents :userId="$attrs.auth.user.id" />
                             </div>
                         </div>
                     </div>

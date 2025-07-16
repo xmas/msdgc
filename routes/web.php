@@ -47,6 +47,11 @@ Route::middleware([
         return Inertia::render('Members');
     })->name('members');
 
+    // Member Events Demo route
+    Route::get('/member-events-demo', function () {
+        return Inertia::render('MemberEventsDemo');
+    })->name('member-events-demo');
+
     // Messages routes
     Route::get('/messages', [App\Http\Controllers\MessageController::class, 'index'])->name('messages.index');
     Route::post('/messages/send', [App\Http\Controllers\MessageController::class, 'send'])->name('messages.send');
