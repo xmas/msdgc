@@ -8,9 +8,9 @@ logo:
   - mandos.png
 udisc_link: 'https://udisc.com/stores/mandos-disc-golf-pro-shop-hZ2v'
 driving_directions: 'https://www.google.com/maps/place/47.307964,-122.2285656'
-north_of_msdgc: true
+north_of_msdgc: false
 city_state: 'Auburn, WA'
 nearby: 'Located in Auburn minutes from Fenwick, Riverside and White River.'
 updated_by: 1
-updated_at: 1752615814
+updated_at: 1752648760
 ---
