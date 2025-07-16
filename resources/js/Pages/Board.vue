@@ -174,7 +174,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11V7a5 5 0 0110 0v4m-5 0v6m0 0h4a2 2 0 002-2v-4a2 2 0 00-2-2h-4m0 6H7a2 2 0 01-2-2v-4a2 2 0 012-2h4" />
                                             </svg>
                                         </span>
-                                        <h1 class="card-header-text">Current Board Members</h1>
+                                        <h1 class="card-header-text">Board of Directors</h1>
                                     </div>
 
                                     <div v-if="membersLoading" class="flex justify-center py-8">
