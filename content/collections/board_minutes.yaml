@@ -2,6 +2,7 @@ title: 'Board Minutes'
 template: board_minutes/show
 layout: layout
 revisions: false
+title_format: '{ date_of_meeting }'
 date: true
 sort_dir: asc
 date_behavior:
