@@ -6,6 +6,7 @@ import LostFound from './Sections/LostFound.vue';
 import Membership from './Sections/Membership.vue';
 import DiscGolfSponsors from './Sections/DiscGolfSponsors.vue';
 import LocalSponsors from './Sections/LocalSponsors.vue';
+import MondayDubs from './Sections/MondayDubs.vue';
 
 defineProps({
     canLogin: {
@@ -108,18 +109,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                         <div class="grid grid-cols-1 gap-6">
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 <!-- Monday Dubs Card - Full Width -->
-                                <div :class="cardStyle" class="bg-zinc-800 text-white col-span-1">
-                                    <p class="uppercase font-bold text-6xl bangers">Monday Dubs!!</p>
-                                    <p>6pm in the summer, earlier as it gets darker. If you're there by 5 you're
-                                        probably
-                                        safe.
-                                        Check the Facebook group for weekly updates.</p>
-
-                                    <p class="uppercase font-bold text-6xl bangers text-red-300">IMPORTANT</p>
-                                    <p class="text-red-100 font-bold"> This means the course is <span
-                                            class="font-bold text-pink-400">VERY BUSY on Monday evenings</span>.
-                                        All are welcome, but be prepared for a fun time.</p>
-                                </div>
+                                <MondayDubs />
 
                                 <!-- Sponsors Section - 2 Column Layout -->
                                 <DiscGolfSponsors class="col-span-2" :sponsors="sponsors.items || []" />

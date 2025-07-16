@@ -42,9 +42,9 @@ class CMSCollectionsController extends Controller
     }
 
     /**
-     * Get a specific item by ID from a collection
+     * Get a specific item by ID or slug from a collection
      */
-    public function show(string $collection, string $id): JsonResponse
+    public function show(string $collection, string $identifier): JsonResponse
     {
         $collectionPath = base_path("content/collections/{$collection}");
 
@@ -56,7 +56,11 @@ class CMSCollectionsController extends Controller
 
         foreach ($files as $file) {
             $item = $this->parseMarkdownFile($file);
-            if ($item && $item['id'] === $id) {
+            if ($item && (
+                $item['id'] === $identifier ||
+                (isset($item['slug']) && $item['slug'] === $identifier) ||
+                $item['filename'] === $identifier
+            )) {
                 return response()->json([
                     'success' => true,
                     'collection' => $collection,

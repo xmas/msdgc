@@ -1,0 +1,61 @@
+title: Dubs
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: title
+            field:
+              type: text
+              required: true
+              validate:
+                - required
+          -
+            handle: header1
+            field:
+              type: text
+              display: Header1
+          -
+            handle: paragraph_1
+            field:
+              type: markdown
+              display: Paragraph1
+          -
+            handle: header2
+            field:
+              type: text
+              display: Header2
+          -
+            handle: paragraph2
+            field:
+              type: markdown
+              display: Paragraph2
+          -
+            handle: background
+            field:
+              type: color
+              display: Background
+          -
+            handle: paragraph1_color
+            field:
+              type: color
+              display: 'Header 1 Color'
+          -
+            handle: header2_color
+            field:
+              default: '#ffffff'
+              type: color
+              display: 'Header2 Color'
+  sidebar:
+    display: Sidebar
+    sections:
+      -
+        fields:
+          -
+            handle: slug
+            field:
+              type: slug
+              localizable: true
+              validate: 'max:200'

@@ -1,9 +1,9 @@
 <template>
     <div v-if="sponsors.length > 0" class="col-span-2">
-        <h2 class="text-4xl font-bold text-center mb-6 bangers text-gray-800">Disc golf Sponsors</h2>
+        <!-- <h2 class="text-4xl font-bold text-center mb-6 bangers text-gray-800">Disc golf Sponsors</h2> -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div v-for="sponsor in sponsors" :key="sponsor.id" :class="cardStyle" class="bg-white text-black">
-
+                <div class="text-gray-400 uppercase text-sm font-bold">Sponsor</div>
                 <!-- Logo -->
                 <div class="flex-shrink-0 h-24 md:h-32 flex items-center justify-center px-4  mx-auto">
                     <img v-if="sponsor.logo && sponsor.logo[0]" :src="sponsor.logo[0]" :alt="sponsor.title + ' logo'"
@@ -100,5 +100,5 @@ defineProps({
     }
 });
 
-const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] text-black"
+const cardStyle = "rounded-lg p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] text-black"
 </script>
