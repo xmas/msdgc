@@ -3,7 +3,7 @@ id: 2f9072b3-4798-4c1e-991c-dbd4ea60432a
 blueprint: dubs
 title: 'Monday Dubs'
 updated_by: 1
-updated_at: 1752684123
+updated_at: 1752685146
 header1: 'Monday Dubs!!'
 paragraph_1: 'This week 6pm. We will be moving back to 5:30 soon. Check Facebook for the latest.'
 header2_color: '#ffffff'

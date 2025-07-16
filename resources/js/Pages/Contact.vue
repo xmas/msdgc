@@ -102,12 +102,15 @@ const getIconForTitle = (title) => {
                                         <div v-html="getIconForTitle(item.title)"></div>
                                     </template>
                                     <template #content>
-                                        <ul class="list-disc list-inside space-y-2">
+                                        <div class="text-gray-700 text-lg">
+                                            <p v-html="item.content"></p>
+                                        </div>
+                                        <!-- <ul class="list-disc list-inside space-y-2">
                                             <li v-for="contentItem in item.content.split('\n').filter(line => line.trim().startsWith('-'))"
                                                 :key="contentItem"
                                                 v-text="contentItem.replace(/^- /, '')">
                                             </li>
-                                        </ul>
+                                        </ul> -->
                                     </template>
                                 </VolunteerCard>
                             </template>
