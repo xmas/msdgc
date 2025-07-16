@@ -247,14 +247,6 @@ const clearPhotoFileInput = () => {
                 <InputError :message="form.errors.how_did_you_hear" class="mt-2" />
             </div>
 
-            <!-- Paid Via -->
-            <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="paid_via" value="Payment Method" />
-                <SelectInput id="paid_via" v-model="form.paid_via" :options="paidViaOptions"
-                    placeholder="How did you pay your membership fee?" />
-                <InputError :message="form.errors.paid_via" class="mt-2" />
-            </div>
-
             <!-- Tags -->
             <div class="col-span-6 sm:col-span-4">
                 <TagInput v-model="form.tags" label="Tags" />
