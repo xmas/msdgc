@@ -193,7 +193,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                         <div
                                             v-for="member in boardMembers"
                                             :key="member.id"
-                                            class="p-4 hover:bg-gray-50 transition-colors"
+                                            class=" hover:bg-gray-50 transition-colors"
                                         >
                                             <div class="flex items-start space-x-4">
                                                 <!-- Member Information -->
