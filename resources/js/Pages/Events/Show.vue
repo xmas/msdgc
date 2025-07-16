@@ -19,6 +19,9 @@ const props = defineProps({
 
 const showAddUserForm = ref(false);
 const editingUsers = ref(new Set());
+const searchQuery = ref('');
+const sortBy = ref('name');
+const sortOrder = ref('asc');
 
 const addUserForm = useForm({
     user_id: '',
@@ -43,6 +46,62 @@ const userOptions = computed(() => {
         label: `${user.name} (${user.email})`
     }));
 });
+
+// Filter and sort participants
+const filteredAndSortedUsers = computed(() => {
+    let users = [...props.event.users];
+
+    // Apply search filter
+    if (searchQuery.value) {
+        const query = searchQuery.value.toLowerCase();
+        users = users.filter(user =>
+            user.name.toLowerCase().includes(query) ||
+            user.email.toLowerCase().includes(query) ||
+            (user.pivot.attrs && Object.keys(user.pivot.attrs).some(key =>
+                key.toLowerCase().includes(query) ||
+                String(user.pivot.attrs[key]).toLowerCase().includes(query)
+            ))
+        );
+    }
+
+    // Apply sorting
+    users.sort((a, b) => {
+        let aValue, bValue;
+
+        switch (sortBy.value) {
+            case 'name':
+                aValue = a.name.toLowerCase();
+                bValue = b.name.toLowerCase();
+                break;
+            case 'email':
+                aValue = a.email.toLowerCase();
+                bValue = b.email.toLowerCase();
+                break;
+            case 'joined':
+                aValue = new Date(a.pivot.created_at);
+                bValue = new Date(b.pivot.created_at);
+                break;
+            default:
+                aValue = a.name.toLowerCase();
+                bValue = b.name.toLowerCase();
+        }
+
+        if (aValue < bValue) return sortOrder.value === 'asc' ? -1 : 1;
+        if (aValue > bValue) return sortOrder.value === 'asc' ? 1 : -1;
+        return 0;
+    });
+
+    return users;
+});
+
+const setSortBy = (field) => {
+    if (sortBy.value === field) {
+        sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortBy.value = field;
+        sortOrder.value = 'asc';
+    }
+};
 
 const deleteEvent = () => {
     if (confirm('Are you sure you want to delete this event?')) {
@@ -229,7 +288,13 @@ const formatPivotAttrs = (attrs) => {
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-medium text-gray-900">
-                                Participants ({{ event.users.length }})
+                                Participants
+                                <span v-if="searchQuery && filteredAndSortedUsers.length !== event.users.length" class="text-sm font-normal text-gray-500">
+                                    ({{ filteredAndSortedUsers.length }} of {{ event.users.length }})
+                                </span>
+                                <span v-else class="text-sm font-normal text-gray-500">
+                                    ({{ event.users.length }})
+                                </span>
                             </h3>
                             <PrimaryButton v-if="availableUsers.length > 0" @click="showAddUserForm = !showAddUserForm">
                                 {{ showAddUserForm ? 'Cancel' : 'Add User' }}
@@ -275,6 +340,34 @@ const formatPivotAttrs = (attrs) => {
                             </form>
                         </div>
 
+                        <!-- Search and Sort Controls -->
+                        <div v-if="event.users.length > 0" class="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                            <div class="flex-1 max-w-md">
+                                <input
+                                    v-model="searchQuery"
+                                    type="text"
+                                    placeholder="Search participants..."
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </div>
+                            <div class="flex space-x-2">
+                                <select
+                                    v-model="sortBy"
+                                    class="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                >
+                                    <option value="name">Sort by Name</option>
+                                    <option value="email">Sort by Email</option>
+                                    <option value="joined">Sort by Joined Date</option>
+                                </select>
+                                <button
+                                    @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'"
+                                    class="px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                >
+                                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                                </button>
+                            </div>
+                        </div>
+
                         <!-- No Users Message -->
                         <div v-if="event.users.length === 0" class="text-center py-8">
                             <p class="text-gray-500">No participants yet.</p>
@@ -283,21 +376,53 @@ const formatPivotAttrs = (attrs) => {
                             </p>
                         </div>
 
+                        <!-- Filtered Results Message -->
+                        <div v-else-if="filteredAndSortedUsers.length === 0" class="text-center py-8">
+                            <p class="text-gray-500">No participants match your search.</p>
+                            <button
+                                @click="searchQuery = ''"
+                                class="mt-2 text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                            >
+                                Clear search
+                            </button>
+                        </div>
+
                         <div v-else class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Name
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                                            @click="setSortBy('name')"
+                                        >
+                                            <div class="flex items-center space-x-1">
+                                                <span>Name</span>
+                                                <span v-if="sortBy === 'name'" class="text-indigo-600">
+                                                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                                                </span>
+                                            </div>
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Email
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                                            @click="setSortBy('email')"
+                                        >
+                                            <div class="flex items-center space-x-1">
+                                                <span>Email</span>
+                                                <span v-if="sortBy === 'email'" class="text-indigo-600">
+                                                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                                                </span>
+                                            </div>
                                         </th>
                                         <th
-                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Joined
+                                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                                            @click="setSortBy('joined')"
+                                        >
+                                            <div class="flex items-center space-x-1">
+                                                <span>Joined</span>
+                                                <span v-if="sortBy === 'joined'" class="text-indigo-600">
+                                                    {{ sortOrder === 'asc' ? '↑' : '↓' }}
+                                                </span>
+                                            </div>
                                         </th>
                                         <th
                                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -310,7 +435,7 @@ const formatPivotAttrs = (attrs) => {
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    <tr v-for="user in event.users" :key="user.id" class="hover:bg-gray-50">
+                                    <tr v-for="user in filteredAndSortedUsers" :key="user.id" class="hover:bg-gray-50">
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">
                                                 {{ user.name }}
