@@ -19,6 +19,7 @@ class Event extends Model
         'name',
         'event_group',
         'attrs',
+        'user_attrs',
     ];
 
     /**
@@ -30,6 +31,7 @@ class Event extends Model
     {
         return [
             'attrs' => 'array',
+            'user_attrs' => 'array',
         ];
     }
 

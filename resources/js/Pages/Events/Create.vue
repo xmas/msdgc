@@ -14,7 +14,8 @@ import { router } from '@inertiajs/vue3';
 const form = useForm({
     name: '',
     event_group: '',
-    attrs: ''
+    attrs: '',
+    user_attrs: ''
 });
 
 const submit = () => {
@@ -104,6 +105,20 @@ const eventGroups = [
                                 <InputError :message="form.errors.attrs" class="mt-2" />
                                 <p class="mt-2 text-sm text-gray-500">
                                     Optional: Add custom attributes as key-value pairs. Example: location = "123 Main St", capacity = "100"
+                                </p>
+                            </div>
+
+                            <div class="col-span-6">
+                                <InputLabel for="user_attrs" value="Default User Attributes" />
+                                <KeyValueEditor
+                                    v-model="form.user_attrs"
+                                    placeholder="Add default user attributes..."
+                                    key-placeholder="Attribute name (e.g., role, department)"
+                                    value-placeholder="Default value"
+                                />
+                                <InputError :message="form.errors.user_attrs" class="mt-2" />
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Optional: Define default attributes that will be pre-filled when adding new users to this event. Example: role = "attendee", department = ""
                                 </p>
                             </div>
                         </template>

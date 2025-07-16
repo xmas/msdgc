@@ -41,6 +41,7 @@ class EventController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'event_group' => ['required', 'string', 'max:255'],
             'attrs' => ['nullable', 'string'],
+            'user_attrs' => ['nullable', 'string'],
         ]);
 
         // Parse attrs JSON if provided
@@ -50,6 +51,15 @@ class EventController extends Controller
                 return back()->withErrors(['attrs' => 'Invalid JSON format.'])->withInput();
             }
             $validated['attrs'] = $decoded;
+        }
+
+        // Parse user_attrs JSON if provided
+        if ($validated['user_attrs']) {
+            $decoded = json_decode($validated['user_attrs'], true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return back()->withErrors(['user_attrs' => 'Invalid JSON format.'])->withInput();
+            }
+            $validated['user_attrs'] = $decoded;
         }
 
         Event::create($validated);
@@ -107,6 +117,7 @@ class EventController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'event_group' => ['required', 'string', 'max:255'],
             'attrs' => ['nullable', 'string'],
+            'user_attrs' => ['nullable', 'string'],
         ]);
 
         // Parse attrs JSON if provided
@@ -116,6 +127,15 @@ class EventController extends Controller
                 return back()->withErrors(['attrs' => 'Invalid JSON format.'])->withInput();
             }
             $validated['attrs'] = $decoded;
+        }
+
+        // Parse user_attrs JSON if provided
+        if ($validated['user_attrs']) {
+            $decoded = json_decode($validated['user_attrs'], true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                return back()->withErrors(['user_attrs' => 'Invalid JSON format.'])->withInput();
+            }
+            $validated['user_attrs'] = $decoded;
         }
 
         $event->update($validated);

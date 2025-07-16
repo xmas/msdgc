@@ -139,13 +139,13 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
 
                                             <!-- Content on the right -->
                                             <div class="flex-1 min-w-0">
-                                                <h3 class="text-2xl font-bold mb-2 bangers text-blue-700">{{
+                                                <h3 class="text-2xl font-bold text-zinc-800">{{
                                                     sponsor.title }}</h3>
 
                                                 <div class="space-y-2 text-sm">
                                                     <!-- City and North/South indicator -->
                                                     <p v-if="sponsor.city_state" class="flex items-center">
-                                                        <svg class="w-4 h-4 mr-2 text-gray-500" fill="none"
+                                                        <svg class="w-4 h-4 mr-2 text-zinc-400" fill="none"
                                                             stroke="currentColor" viewBox="0 0 24 24">
                                                             <path stroke-linecap="round" stroke-linejoin="round"
                                                                 stroke-width="2"
@@ -155,19 +155,19 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                                                 stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z">
                                                             </path>
                                                         </svg>
-                                                        <span>{{ sponsor.city_state }} - {{ sponsor.north_of_msdgc ?
+                                                        <span class="text-zinc-500">{{ sponsor.city_state }} - {{ sponsor.north_of_msdgc ?
                                                             'North' : 'South' }} of Mineral Springs</span>
                                                     </p>
 
                                                     <!-- Nearby description -->
-                                                    <p v-if="sponsor.nearby" class="text-gray-700">{{ sponsor.nearby }}
+                                                    <p v-if="sponsor.nearby" class="text-gray-800 italic">{{ sponsor.nearby }}
                                                     </p>
 
                                                     <!-- Links -->
                                                     <div class="flex flex-wrap gap-2 mt-3">
                                                         <a v-if="sponsor.web_site" :href="sponsor.web_site"
                                                             target="_blank" rel="noopener"
-                                                            class="inline-flex items-center px-3 py-1 bg-blue-500 text-white text-xs rounded-full hover:bg-blue-600 transition-colors">
+                                                            class="inline-flex items-center px-3 py-1 text-gray-600 text-xs rounded-full hover:text-gray-800 transition-colors outline-none focus:outline-none">
                                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                                 viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -180,7 +180,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
 
                                                         <a v-if="sponsor.udisc_link" :href="sponsor.udisc_link"
                                                             target="_blank" rel="noopener"
-                                                            class="inline-flex items-center px-3 py-1 bg-green-500 text-white text-xs rounded-full hover:bg-green-600 transition-colors">
+                                                            class="inline-flex items-center px-3 py-1 text-gray-600 text-xs rounded-full hover:text-gray-800 transition-colors outline-none focus:outline-none">
                                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                                 viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -197,7 +197,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                                         <a v-if="sponsor.driving_directions"
                                                             :href="sponsor.driving_directions" target="_blank"
                                                             rel="noopener"
-                                                            class="inline-flex items-center px-3 py-1 bg-yellow-500 text-white text-xs rounded-full hover:bg-yellow-600 transition-colors">
+                                                            class="inline-flex items-center px-3 py-1 text-gray-600 text-xs rounded-full hover:text-gray-800 transition-colors outline-none focus:outline-none">
                                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                                 viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -209,7 +209,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                                         </a>
 
                                                         <span v-if="sponsor.is_pro_shop"
-                                                            class="inline-flex items-center px-3 py-1 bg-purple-500 text-white text-xs rounded-full">
+                                                            class="inline-flex items-center px-3 py-1 text-gray-600 text-xs rounded-full hover:text-gray-800 transition-colors outline-none focus:outline-none">
                                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor"
                                                                 viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -249,7 +249,7 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
                                                     </div>
                                                 </div>
                                                 <!-- Title with consistent height for 2 lines -->
-                                                <h3 class="text-lg md:text-xl font-bold bangers text-blue-700 text-center w-full break-words leading-tight h-12 md:h-14 flex items-center justify-center">
+                                                <h3 class=" text-zinc-800 text-center w-full break-words leading-tight h-12 md:h-14 flex items-center justify-center">
                                                     {{ sponsor.title }}
                                                 </h3>
                                             </a>

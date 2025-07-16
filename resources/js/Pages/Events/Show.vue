@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { router, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -23,6 +23,14 @@ const editingUsers = ref(new Set());
 const addUserForm = useForm({
     user_id: '',
     attrs: ''
+});
+
+// Initialize form with default user attributes
+onMounted(() => {
+    const userAttrs = props.event.user_attrs || {};
+    if (Object.keys(userAttrs).length > 0) {
+        addUserForm.attrs = JSON.stringify(userAttrs);
+    }
 });
 
 // Store for user attribute forms
@@ -52,6 +60,11 @@ const submitAddUser = () => {
     addUserForm.post(route('events.users.add', props.event.id), {
         onSuccess: () => {
             addUserForm.reset();
+            // Reset attrs to default user_attrs
+            const userAttrs = props.event.user_attrs || {};
+            if (Object.keys(userAttrs).length > 0) {
+                addUserForm.attrs = JSON.stringify(userAttrs);
+            }
             showAddUserForm.value = false;
         }
     });
@@ -191,9 +204,20 @@ const formatPivotAttrs = (attrs) => {
                                     <span class="text-xs text-gray-800">{{ value }}</span>
                                 </div>
                             </div>
+                        </div>
 
-
-
+                        <!-- Default User Attributes -->
+                        <div v-if="formatAttrs(event.user_attrs)" class="mt-6">
+                            <dt class="text-sm font-medium text-gray-500 mb-2">Default User Attributes</dt>
+                            <div v-if="event.user_attrs && Object.keys(event.user_attrs).length > 0" class="space-y-1">
+                                <div v-for="(value, key) in event.user_attrs" :key="key" class="flex items-center space-x-2">
+                                    <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">{{ key }}</span>
+                                    <span class="text-xs text-gray-800">{{ value }}</span>
+                                </div>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500">
+                                These attributes will be pre-filled when adding new users to this event.
+                            </p>
                         </div>
                     </div>
                 </div>
