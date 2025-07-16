@@ -18,7 +18,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
             'sms' => ['nullable', 'string', 'max:20'],
@@ -29,6 +30,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'paid_via' => ['nullable', 'string', 'max:255'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['string', 'max:50'],
+            'comments' => ['nullable', 'string'],
+            'topics' => ['nullable', 'string'],
+            'region' => ['nullable', 'string', 'max:255'],
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
@@ -40,7 +44,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
-                'name' => $input['name'],
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
                 'email' => $input['email'],
                 'sms' => $input['sms'] ?? null,
                 'provider' => $input['provider'] ?? null,
@@ -49,6 +54,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'how_did_you_hear' => $input['how_did_you_hear'] ?? null,
                 'paid_via' => $input['paid_via'] ?? null,
                 'tags' => $input['tags'] ?? null,
+                'comments' => $input['comments'] ?? null,
+                'topics' => $input['topics'] ?? null,
+                'region' => $input['region'] ?? null,
             ])->save();
         }
     }
@@ -61,7 +69,8 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     protected function updateVerifiedUser(User $user, array $input): void
     {
         $user->forceFill([
-            'name' => $input['name'],
+            'first_name' => $input['first_name'],
+            'last_name' => $input['last_name'],
             'email' => $input['email'],
             'email_verified_at' => null,
             'sms' => $input['sms'] ?? null,
@@ -71,6 +80,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'how_did_you_hear' => $input['how_did_you_hear'] ?? null,
             'paid_via' => $input['paid_via'] ?? null,
             'tags' => $input['tags'] ?? null,
+            'comments' => $input['comments'] ?? null,
+            'topics' => $input['topics'] ?? null,
+            'region' => $input['region'] ?? null,
         ])->save();
 
         $user->sendEmailVerificationNotification();

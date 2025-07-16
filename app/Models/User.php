@@ -29,7 +29,8 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'sms',
@@ -40,6 +41,9 @@ class User extends Authenticatable
         'paid_via',
         'tags',
         'is_super_admin',
+        'comments',
+        'topics',
+        'region',
     ];
 
     /**
@@ -62,6 +66,7 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
         'is_admin',
+        'name',
     ];
 
     /**
@@ -191,10 +196,11 @@ class User extends Authenticatable
     /**
      * Create a passwordless user
      */
-    public static function createPasswordlessUser(string $name, ?string $email = null, ?string $sms = null): self
+    public static function createPasswordlessUser(string $firstName, string $lastName, ?string $email = null, ?string $sms = null): self
     {
         $userData = [
-            'name' => $name,
+            'first_name' => $firstName,
+            'last_name' => $lastName,
             'password' => null, // No password for passwordless users
         ];
 
@@ -254,5 +260,21 @@ class User extends Authenticatable
                     ->withCasts([
                         'attrs' => 'array',
                     ]);
+    }
+
+    /**
+     * Get the user's full name.
+     */
+    public function getFullNameAttribute(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
+    /**
+     * Get the user's full name (alias for getFullNameAttribute).
+     */
+    public function getNameAttribute(): string
+    {
+        return $this->getFullNameAttribute();
     }
 }
