@@ -17,7 +17,7 @@ class MemberController extends Controller
     public function index(): JsonResponse
     {
         $members = User::select([
-            'id', 'name', 'email', 'sms', 'provider', 'tags',
+            'id', 'first_name', 'last_name','email', 'sms', 'provider', 'tags',
             'sms_opt_in', 'email_opt_in', 'how_did_you_hear', 'paid_via',
             'created_at', 'updated_at'
         ])->paginate(1000);

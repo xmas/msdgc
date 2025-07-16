@@ -162,9 +162,9 @@ class PasswordlessLoginController extends Controller
 
         // Create user with the provided name
         if ($loginToken->type === 'email') {
-            $user = User::createPasswordlessUser($request->name, $loginToken->identifier, null);
+            $user = User::createPasswordlessUser($request->first_name, $request->last_name, $loginToken->identifier, null);
         } else {
-            $user = User::createPasswordlessUser($request->name, null, $loginToken->identifier);
+            $user = User::createPasswordlessUser($request->first_name, $request->last_name, $loginToken->identifier);
         }
 
         // Log the user in
