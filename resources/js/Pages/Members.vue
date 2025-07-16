@@ -15,10 +15,8 @@ defineProps({
             </h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <MemberList :user="auth.user" />
-            </div>
+        <div class="w-full h-full">
+            <MemberList :user="auth.user" />
         </div>
     </AppLayout>
 </template>

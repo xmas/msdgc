@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\PasswordlessLoginController;
 
 Route::get('/', function () {
-    Log::info(config('app.debug'));
-
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),

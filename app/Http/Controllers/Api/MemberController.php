@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\Rule;
@@ -52,6 +53,9 @@ class MemberController extends Controller
         }
 
         $member = User::create($validated);
+
+        // Assign user to Member team
+        $this->assignToMemberTeam($member);
 
         return response()->json($member, 201);
     }
@@ -144,6 +148,10 @@ class MemberController extends Controller
                 }
 
                 $member = User::create($memberData);
+
+                // Assign user to Member team
+                $this->assignToMemberTeam($member);
+
                 $created[] = $member;
             } catch (\Exception $e) {
                 $errors[] = [
@@ -159,5 +167,17 @@ class MemberController extends Controller
             'errors' => $errors,
             'members' => $created
         ]);
+    }
+
+    /**
+     * Assign user to the Member team and set it as current team.
+     */
+    protected function assignToMemberTeam(User $user): void
+    {
+        $memberTeam = Team::memberTeam();
+        if ($memberTeam) {
+            $memberTeam->users()->attach($user);
+            $user->switchTeam($memberTeam);
+        }
     }
 }

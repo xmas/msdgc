@@ -206,7 +206,16 @@ class User extends Authenticatable
             $userData['sms'] = $sms;
         }
 
-        return static::create($userData);
+        $user = static::create($userData);
+
+        // Assign user to Member team
+        $memberTeam = Team::memberTeam();
+        if ($memberTeam) {
+            $memberTeam->users()->attach($user);
+            $user->switchTeam($memberTeam);
+        }
+
+        return $user;
     }
 
     /**

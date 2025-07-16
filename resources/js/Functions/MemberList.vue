@@ -113,7 +113,7 @@
       </div>
 
       <!-- Virtual Scroller Content -->
-      <div class="relative" style="height: 600px;">
+    <div class="relative" style="height: calc(100vh - 420px);">
         <RecycleScroller
           class="scroller"
           :items="filteredMembers"

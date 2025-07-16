@@ -7,7 +7,7 @@ web_site: 'https://marquesa-newman-lmt.square.site/'
 logo:
   - quesa.webp
 north_of_msdgc: false
-parent: 192d4a32-12af-4629-81fe-627a3234bf68
 updated_by: 1
-updated_at: 1752633917
+updated_at: 1752640986
+logo_background: '#ececec'
 ---
