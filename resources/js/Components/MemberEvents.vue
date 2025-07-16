@@ -1,11 +1,8 @@
 <template>
     <div class="space-y-4">
         <div class="flex items-center justify-between">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
-                Member Events
-            </h3>
             <div class="text-sm text-gray-500 dark:text-gray-400">
-                {{ events.length }} {{ events.length === 1 ? 'event' : 'events' }}
+                You are part of {{ events.length }} {{ events.length === 1 ? 'event' : 'events' }}
             </div>
         </div>
 
