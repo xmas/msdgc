@@ -58,9 +58,8 @@ const cancel = () => {
 
                         <template #form>
                             <div class="col-span-6 sm:col-span-4">
-                                <InputLabel for="name" value="Event Name" />
+                                <InputLabel for="event_name" value="Event Name" />
                                 <TextInput
-                                    id="name"
                                     v-model="form.name"
                                     type="text"
                                     class="mt-1 block w-full"
@@ -73,7 +72,6 @@ const cancel = () => {
                             <div class="col-span-6 sm:col-span-4">
                                 <InputLabel for="event_group" value="Event Group" />
                                 <TextInput
-                                    id="event_group"
                                     v-model="form.event_group"
                                     type="text"
                                     class="mt-1 block w-full"
