@@ -194,30 +194,32 @@ const formatPivotAttrs = (attrs) => {
                             </div>
                         </div>
 
-                        <!-- Event Attributes -->
-                        <div v-if="formatAttrs(event.attrs)" class="mt-6">
-                            <dt class="text-sm font-medium text-gray-500 mb-2">Event Attributes</dt>
-                            <div v-if="event.attrs && Object.keys(event.attrs).length > 0" class="space-y-1">
-                                <div v-for="(value, key) in event.attrs" :key="key" class="flex items-center space-x-2">
-                                    <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">{{ key
-                                        }}</span>
-                                    <span class="text-xs text-gray-800">{{ value }}</span>
+                        <!-- Event Attributes and Default User Attributes -->
+                        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Event Attributes -->
+                            <div v-if="formatAttrs(event.attrs)">
+                                <dt class="text-sm font-medium text-gray-500 mb-2">Event Attributes</dt>
+                                <div v-if="event.attrs && Object.keys(event.attrs).length > 0" class="space-y-1">
+                                    <div v-for="(value, key) in event.attrs" :key="key" class="flex items-center space-x-2">
+                                        <span class="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">{{ key }}</span>
+                                        <span class="text-xs text-gray-800">{{ value }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Default User Attributes -->
-                        <div v-if="formatAttrs(event.user_attrs)" class="mt-6">
-                            <dt class="text-sm font-medium text-gray-500 mb-2">Default User Attributes</dt>
-                            <div v-if="event.user_attrs && Object.keys(event.user_attrs).length > 0" class="space-y-1">
-                                <div v-for="(value, key) in event.user_attrs" :key="key" class="flex items-center space-x-2">
-                                    <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">{{ key }}</span>
-                                    <span class="text-xs text-gray-800">{{ value }}</span>
+                            <!-- Default User Attributes -->
+                            <div v-if="formatAttrs(event.user_attrs)">
+                                <dt class="text-sm font-medium text-gray-500 mb-2">Default User Attributes</dt>
+                                <div v-if="event.user_attrs && Object.keys(event.user_attrs).length > 0" class="space-y-1">
+                                    <div v-for="(value, key) in event.user_attrs" :key="key" class="flex items-center space-x-2">
+                                        <span class="text-xs font-medium text-blue-600 bg-blue-100 px-2 py-1 rounded">{{ key }}</span>
+                                        <span class="text-xs text-gray-800">{{ value }}</span>
+                                    </div>
                                 </div>
+                                <p class="mt-2 text-sm text-gray-500">
+                                    These attributes will be pre-filled when adding new users to this event.
+                                </p>
                             </div>
-                            <p class="mt-2 text-sm text-gray-500">
-                                These attributes will be pre-filled when adding new users to this event.
-                            </p>
                         </div>
                     </div>
                 </div>
