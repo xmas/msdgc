@@ -29,18 +29,6 @@ const submit = () => {
 const cancel = () => {
     router.visit(route('events.index'));
 };
-
-const eventGroups = [
-    'Conference',
-    'Workshop',
-    'Meetup',
-    'Webinar',
-    'Training',
-    'Networking',
-    'Social',
-    'Competition',
-    'Other'
-];
 </script>
 
 <template>
@@ -84,17 +72,13 @@ const eventGroups = [
 
                             <div class="col-span-6 sm:col-span-4">
                                 <InputLabel for="event_group" value="Event Group" />
-                                <select
+                                <TextInput
                                     id="event_group"
                                     v-model="form.event_group"
-                                    class="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    required
-                                >
-                                    <option value="">Select an event group</option>
-                                    <option v-for="group in eventGroups" :key="group" :value="group">
-                                        {{ group }}
-                                    </option>
-                                </select>
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    placeholder="Enter event group (e.g., Conference, Workshop, Meetup)"
+                                />
                                 <InputError :message="form.errors.event_group" class="mt-2" />
                             </div>
 
