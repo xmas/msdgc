@@ -105,11 +105,11 @@ const cardStyle = "flex flex-col items-start gap-6 overflow-hidden rounded-lg p-
         <div class="bg-gray-100 dark:bg-zinc-900 basket-tile">
             <div class="relative min-h-screen flex flex-col items-center selection:bg-[#FF2D20] selection:text-white">
                 <div class="relative w-full px-6 lg:max-w-7xl">
-                    <main class="mt-6">
+                    <main class="my-6">
                         <div class="grid grid-cols-1 gap-6">
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 xl:grid-cols-3  xl:gap-6">
                                 <!-- Monday Dubs Card - Full Width -->
-                                <MondayDubs />
+                                <MondayDubs class=" mb-6 xl:mb-0"/>
 
                                 <!-- Sponsors Section - 2 Column Layout -->
                                 <DiscGolfSponsors class="col-span-2" :sponsors="sponsors.items || []" />
