@@ -208,17 +208,6 @@
                 </select>
               </div>
 
-              <!-- Paid Via -->
-              <div class="col-span-2">
-                <input
-                  v-model="item.paid_via"
-                  @input="markAsChanged(item)"
-                  type="text"
-                  class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Payment method"
-                />
-              </div>
-
               <!-- How They Heard -->
               <div class="col-span-1">
                 <input
