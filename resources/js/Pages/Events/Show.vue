@@ -368,14 +368,18 @@ const downloadParticipantsCSV = () => {
                                     </svg>
                                     <span>Download CSV</span>
                                 </SecondaryButton>
-                                <PrimaryButton v-if="availableUsers.length > 0" @click="showAddUserForm = !showAddUserForm">
+                                <PrimaryButton @click="showAddUserForm = !showAddUserForm">
                                     {{ showAddUserForm ? 'Cancel' : 'Add User' }}
                                 </PrimaryButton>
+                                <p v-if="availableUsers.length === 0" class="text-sm text-gray-500 self-center">
+                                    No users available to add
+                                </p>
                             </div>
                         </div>
 
                         <!-- Add User Form -->
-                        <div v-if="showAddUserForm" class="mb-6 p-4 bg-gray-50 rounded-lg">
+                        <div v-if="showAddUserForm" class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">Add User to Event</h4>
                             <form @submit.prevent="submitAddUser">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
@@ -394,9 +398,7 @@ const downloadParticipantsCSV = () => {
                                             value-placeholder="Attribute value" />
                                         <InputError :message="addUserForm.errors.attrs" class="mt-2" />
                                         <p class="mt-2 text-sm text-gray-500">
-                                            Optional: Add custom attributes for this user's participation. Example: role
-                                            =
-                                            "speaker", notes = "Special requirements"
+                                            Optional: Add custom attributes for this user's participation. Example: role = "speaker", notes = "Special requirements"
                                         </p>
                                     </div>
                                 </div>
