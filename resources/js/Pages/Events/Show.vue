@@ -185,6 +185,66 @@ const formatPivotAttrs = (attrs) => {
     if (!attrs || Object.keys(attrs).length === 0) return 'None';
     return JSON.stringify(attrs, null, 2);
 };
+
+// CSV Download functionality
+const downloadParticipantsCSV = () => {
+    const participants = filteredAndSortedUsers.value;
+    if (participants.length === 0) {
+        alert('No participants to download');
+        return;
+    }
+
+    // Get all unique attribute keys across all participants
+    const allAttributeKeys = new Set();
+    participants.forEach(user => {
+        if (user.pivot.attrs) {
+            Object.keys(user.pivot.attrs).forEach(key => {
+                allAttributeKeys.add(key);
+            });
+        }
+    });
+
+    // Create CSV headers
+    const headers = ['Name', 'Email', 'Joined Date'];
+    const attributeKeysArray = Array.from(allAttributeKeys).sort();
+    headers.push(...attributeKeysArray);
+
+    // Create CSV rows
+    const csvRows = [];
+    csvRows.push(headers.join(','));
+
+    participants.forEach(user => {
+        const row = [];
+
+        // Basic user info
+        row.push(`"${user.name}"`);
+        row.push(`"${user.email}"`);
+        row.push(`"${formatDate(user.pivot.created_at)}"`);
+
+        // Attribute values
+        attributeKeysArray.forEach(key => {
+            const value = user.pivot.attrs && user.pivot.attrs[key] ? user.pivot.attrs[key] : '';
+            row.push(`"${value}"`);
+        });
+
+        csvRows.push(row.join(','));
+    });
+
+    // Create and download CSV file
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `${props.event.name}_participants.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+};
 </script>
 
 <template>
@@ -296,9 +356,21 @@ const formatPivotAttrs = (attrs) => {
                                     ({{ event.users.length }})
                                 </span>
                             </h3>
-                            <PrimaryButton v-if="availableUsers.length > 0" @click="showAddUserForm = !showAddUserForm">
-                                {{ showAddUserForm ? 'Cancel' : 'Add User' }}
-                            </PrimaryButton>
+                            <div class="flex space-x-2">
+                                <SecondaryButton
+                                    v-if="event.users.length > 0"
+                                    @click="downloadParticipantsCSV"
+                                    class="flex items-center space-x-2"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                    <span>Download CSV</span>
+                                </SecondaryButton>
+                                <PrimaryButton v-if="availableUsers.length > 0" @click="showAddUserForm = !showAddUserForm">
+                                    {{ showAddUserForm ? 'Cancel' : 'Add User' }}
+                                </PrimaryButton>
+                            </div>
                         </div>
 
                         <!-- Add User Form -->
@@ -502,6 +574,13 @@ const formatPivotAttrs = (attrs) => {
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- CSV Download Button -->
+                        <div v-if="filteredAndSortedUsers.length > 0" class="mt-4">
+                            <PrimaryButton @click="downloadParticipantsCSV">
+                                Download Participants CSV
+                            </PrimaryButton>
                         </div>
                     </div>
                 </div>
