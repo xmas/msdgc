@@ -87,9 +87,9 @@ class EventController extends Controller
         });
 
         // Get all users who are not already part of this event
-        $availableUsers = \App\Models\User::select(['id', 'name', 'email'])
+        $availableUsers = \App\Models\User::select(['id', 'first_name', 'last_name', 'email'])
             ->whereNotIn('id', $event->users->pluck('id'))
-            ->orderBy('name')
+            ->orderBy('first_name')
             ->get();
 
         return Inertia::render('Events/Show', [
