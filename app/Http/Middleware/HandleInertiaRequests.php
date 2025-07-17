@@ -30,8 +30,24 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        if ($user) {
+            $user->load(['teams', 'ownedTeams', 'currentTeam']);
+            // Manually append all_teams property by combining owned teams and teams user belongs to
+            $allTeams = $user->teams->merge($user->ownedTeams)->unique('id');
+            $user->all_teams = $allTeams;
+        }
+
         return [
             ...parent::share($request),
+            'auth' => [
+                'user' => $user,
+            ],
+            'flash' => [
+                'message' => fn () => $request->session()->get('message'),
+                'error' => fn () => $request->session()->get('error'),
+            ],
+            'csrf_token' => fn () => csrf_token(),
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
