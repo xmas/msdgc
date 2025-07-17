@@ -43,64 +43,58 @@ const cancel = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+
+
                     <FormSection @submitted="submit">
+
                         <template #title>
-                            Event Details
+                            <div class="p-6">
+                                <h3 class="text-lg font-medium text-gray-900 mb-6">
+                                    Create Event
+                                </h3>
+                                <p class="mt-2 text-sm text-gray-500">
+                                    Create a new event with basic information and custom attributes.
+                                </p>
+                            </div>
                         </template>
-
-                        <template #description>
-                            Create a new event with basic information and custom attributes.
-                        </template>
-
                         <template #form>
                             <div class="col-span-6 sm:col-span-4">
                                 <InputLabel for="event_name" value="Event Name" />
-                                <TextInput
-                                    v-model="form.name"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    required
-                                    autofocus
-                                />
+                                <TextInput v-model="form.name" type="text" class="mt-1 block w-full" required
+                                    autofocus />
                                 <InputError :message="form.errors.name" class="mt-2" />
                             </div>
 
                             <div class="col-span-6 sm:col-span-4">
                                 <InputLabel for="event_group" value="Event Group" />
-                                <TextInput
-                                    v-model="form.event_group"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    placeholder="Enter event group (e.g., Conference, Workshop, Meetup)"
-                                />
+                                <TextInput v-model="form.event_group" type="text" class="mt-1 block w-full"
+                                    placeholder="Enter event group (e.g., Conference, Workshop, Meetup)" />
                                 <InputError :message="form.errors.event_group" class="mt-2" />
                             </div>
 
                             <div class="col-span-6">
                                 <InputLabel for="attrs" value="Event Attributes" />
-                                <KeyValueEditor
-                                    v-model="form.attrs"
-                                    placeholder="Add event attributes..."
+                                <KeyValueEditor v-model="form.attrs" placeholder="Add event attributes..."
                                     key-placeholder="Attribute name (e.g., location, capacity)"
-                                    value-placeholder="Attribute value"
-                                />
+                                    value-placeholder="Attribute value" />
                                 <InputError :message="form.errors.attrs" class="mt-2" />
                                 <p class="mt-2 text-sm text-gray-500">
-                                    Optional: Add custom attributes as key-value pairs. Example: location = "123 Main St", capacity = "100"
+                                    Optional: Add custom attributes as key-value pairs. Example: location = "123 Main
+                                    St",
+                                    capacity = "100"
                                 </p>
                             </div>
 
                             <div class="col-span-6">
                                 <InputLabel for="user_attrs" value="Default User Attributes" />
-                                <KeyValueEditor
-                                    v-model="form.user_attrs"
-                                    placeholder="Add default user attributes..."
+                                <KeyValueEditor v-model="form.user_attrs" placeholder="Add default user attributes..."
                                     key-placeholder="Attribute name (e.g., role, department)"
-                                    value-placeholder="Default value"
-                                />
+                                    value-placeholder="Default value" />
                                 <InputError :message="form.errors.user_attrs" class="mt-2" />
                                 <p class="mt-2 text-sm text-gray-500">
-                                    Optional: Define default attributes that will be pre-filled when adding new users to this event. Example: role = "attendee", department = ""
+                                    Optional: Define default attributes that will be pre-filled when adding new users to
+                                    this
+                                    event. Example: role = "attendee", department = ""
                                 </p>
                             </div>
                         </template>
